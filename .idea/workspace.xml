@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="smth strange">
-      <change afterPath="$PROJECT_DIR$/pygame_tests/Space Invaders by fCC.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pygame_tests/alien.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pygame_tests/background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pygame_tests/player.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pygame_tests/shoot.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pygame_tests/ufo.png" afterDir="false" />
+    <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="alot and different">
+      <change afterPath="$PROJECT_DIR$/pygame_tests/background.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pygame_tests/background.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pygame_tests/explosion.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pygame_tests/laser.wav" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calc/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/calc/calculator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pong/pong1.py" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/pong/pong1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/snake/snake.py" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/snake/snake.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/Space Invaders by fCC.py" beforeDir="false" afterPath="$PROJECT_DIR$/pygame_tests/Space Invaders by fCC.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,11 +229,20 @@
       <option name="project" value="LOCAL" />
       <updated>1720885759568</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="alot and different">
+      <option name="closed" value="true" />
+      <created>1720969866214</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1720969866214</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="smth strange" />
-    <option name="LAST_COMMIT_MESSAGE" value="smth strange" />
+    <MESSAGE value="alot and different" />
+    <option name="LAST_COMMIT_MESSAGE" value="alot and different" />
   </component>
 </project>
