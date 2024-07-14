@@ -5,8 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="smth strange">
+      <change afterPath="$PROJECT_DIR$/pygame_tests/Space Invaders by fCC.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pygame_tests/alien.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pygame_tests/background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pygame_tests/player.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pygame_tests/shoot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pygame_tests/ufo.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/snake/snake.py" beforeDir="false" afterPath="$PROJECT_DIR$/snake/snake.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calc/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/calc/calculator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pong/pong1.py" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/pong/pong1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snake/snake.py" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/snake/snake.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,19 +52,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.calculator.executor&quot;: &quot;Run&quot;,
-    &quot;Python.snake.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/python/first_projects&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.Space Invaders by fCC (1).executor": "Run",
+    "Python.calculator.executor": "Run",
+    "Python.hello.executor": "Run",
+    "Python.snake.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.test2.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/python/first_projects",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
-  <component name="RunManager" selected="Python.snake">
-    <configuration name="calculator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\python\first_projects" />
+      <recent name="D:\python\first_projects\not mine" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.Space Invaders by fCC (1)">
+    <configuration name="Space Invaders by fCC (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="first_projects" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -65,11 +82,33 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/calc" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pygame_tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/calc/calculator.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pygame_tests/Space Invaders by fCC.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Space Invaders by fCC" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="first_projects" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pygame_tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="D:\python\first_projects\pygame_tests\Space Invaders by fCC.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -122,11 +161,35 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="first_projects" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.snake" />
+        <item itemvalue="Python.Space Invaders by fCC (1)" />
+        <item itemvalue="Python.Space Invaders by fCC" />
         <item itemvalue="Python.test" />
-        <item itemvalue="Python.calculator" />
+        <item itemvalue="Python.test2" />
+        <item itemvalue="Python.snake" />
       </list>
     </recent_temporary>
   </component>
@@ -162,7 +225,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720884232892</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="smth strange">
+      <option name="closed" value="true" />
+      <created>1720885759568</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1720885759568</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
