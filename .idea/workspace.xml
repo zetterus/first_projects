@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="alot and different">
-      <change afterPath="$PROJECT_DIR$/pygame_tests/background.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pygame_tests/background.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pygame_tests/explosion.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pygame_tests/laser.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pygame_tests/Space Invaders by fCC.py" beforeDir="false" afterPath="$PROJECT_DIR$/pygame_tests/Space Invaders by fCC.py" afterDir="false" />
-    </list>
+    <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="todo: movement, suspend player after gameover,&#10;menu" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
