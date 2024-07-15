@@ -9,6 +9,6 @@ doc = BeautifulSoup(result.text, "html.parser")
 tags = doc.find_all("script")
 
 string = str(tags[4])
-print(string)
-print(string.find('"price":"'))
+# print(string)
+# print(string.find('"price":"'))
 print(string[1255+9:1255+9+6])
