@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="todo: movement, suspend player after gameover,&#10;menu" />
+    <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="todo: movement, suspend player after gameover,&#10;menu">
+      <change afterPath="$PROJECT_DIR$/mine/expensive_notebook_price_get.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/Space Invaders by fCC.py" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/Space Invaders by fCC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/alien.png" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/alien.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/background.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/background.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/background.png" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/background.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/background.wav" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/background.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/explosion.wav" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/explosion.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/laser.wav" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/laser.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/player.png" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/player.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/shoot.png" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/shoot.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pygame_tests/ufo.png" beforeDir="false" afterPath="$PROJECT_DIR$/not mine/Space Invaders by fCC/ufo.png" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,7 +56,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Python.Space Invaders by fCC (1).executor": "Run",
+    "Python.Space Invaders by fCC (1).executor": "Debug",
     "Python.calculator.executor": "Run",
     "Python.hello.executor": "Run",
     "Python.snake.executor": "Run",
@@ -52,16 +65,22 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
     "last_opened_file_path": "D:/python/first_projects",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "preferences.editor.code.editing"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "HTML",
+      "JSON"
+    ]
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\python\first_projects" />
       <recent name="D:\python\first_projects\not mine" />
+      <recent name="D:\python\first_projects" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Space Invaders by fCC (1)">
+  <component name="RunManager" selected="Python.test">
     <configuration name="Space Invaders by fCC (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="first_projects" />
       <option name="ENV_FILES" value="" />
@@ -174,10 +193,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Space Invaders by fCC (1)" />
-        <item itemvalue="Python.Space Invaders by fCC" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.test2" />
+        <item itemvalue="Python.Space Invaders by fCC (1)" />
+        <item itemvalue="Python.Space Invaders by fCC" />
         <item itemvalue="Python.snake" />
       </list>
     </recent_temporary>
@@ -238,7 +257,23 @@
       <option name="project" value="LOCAL" />
       <updated>1720973910320</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="todo: movement, suspend player after gameover,&#10;menu">
+      <option name="closed" value="true" />
+      <created>1721037867265</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1721037867265</updated>
+    </task>
+    <task id="LOCAL-00007" summary="todo: movement, suspend player after gameover,&#10;menu">
+      <option name="closed" value="true" />
+      <created>1721037887589</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1721037887589</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
