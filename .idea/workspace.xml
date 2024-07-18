@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="well done">
-      <change afterPath="$PROJECT_DIR$/not mine/scraping/1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/not mine/scraping/coinmarketcap.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/not mine/scraping/multiple_products.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mine/expensive_notebook_price_get.py" beforeDir="false" afterPath="$PROJECT_DIR$/mine/expensive_notebook_price_get.py" afterDir="false" />
-    </list>
+    <list default="true" id="0834fa65-d231-4bc6-9652-8179d7ce422a" name="Changes" comment="so-so" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -55,7 +49,9 @@
     "Python.coinmarketcap.executor": "Run",
     "Python.expensive_notebook_price_get.executor": "Run",
     "Python.hello.executor": "Run",
+    "Python.main.executor": "Run",
     "Python.multiple_products.executor": "Run",
+    "Python.scraping.executor": "Run",
     "Python.snake.executor": "Run",
     "Python.test.executor": "Run",
     "Python.test2.executor": "Run",
@@ -311,7 +307,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721137883216</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="so-so">
+      <option name="closed" value="true" />
+      <created>1721225630403</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1721225630403</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -320,6 +324,7 @@
     <MESSAGE value="todo: movement, suspend player after gameover,&#10;menu" />
     <MESSAGE value="restructure and first scrapping trys" />
     <MESSAGE value="well done" />
-    <option name="LAST_COMMIT_MESSAGE" value="well done" />
+    <MESSAGE value="so-so" />
+    <option name="LAST_COMMIT_MESSAGE" value="so-so" />
   </component>
 </project>
