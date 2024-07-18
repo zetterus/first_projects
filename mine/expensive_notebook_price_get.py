@@ -1,17 +1,44 @@
-import requests
-from bs4 import BeautifulSoup
-import json
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+import time
 
-url = "https://rozetka.com.ua/439383788/p439383788/"
+URL = "https://rozetka.com.ua/"
+PATH = "D:\\python\\first_projects\\not mine\\scraping\\Tech with Tim\\chromedriver.exe"
+QUERY = "asus rog"  # input("VVODI ZAPROS")
 
-result = requests.get(url)  # получаем ответ от сервера
+service = Service(executable_path=PATH)
+driver = webdriver.Chrome(service=service)
 
-doc = BeautifulSoup(result.text, "html.parser")  # создаём бс4 объект, для парсинга хтмл страницы и присваиваем его переменной
+driver.get(URL)
 
-tags = doc.find_all("script")  # ищем в этом объекте теги "script"
+try:
+    WebDriverWait(driver, 3).until(
+        EC.presence_of_element_located((By.NAME, "search")))
+    search = driver.find_element(By.NAME, "search")
+    search.send_keys(QUERY)
+    search.send_keys(Keys.ENTER)
 
-string = tags[4].string  # выбираем 5й по счёту и делаем из него строку
+    WebDriverWait(driver, 3).until(
+        EC.presence_of_element_located((By.TAG_NAME, "app-goods-tile-default")))
+    table = driver.find_elements(By.TAG_NAME, "app-goods-tile-default")
 
-test = json.loads(string)  # десериализуем строку
+    # items = table.find_elements()
+    for item in table:
+        WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "goods-tile__content")))
+        item_name1 = item.find_element(By.CLASS_NAME, "goods-tile__content")
+        item_name2 = item_name1.find_element(By.CLASS_NAME, "goods-tile__title")
+        old_item_price = item.find_element(By.CLASS_NAME, "goods-tile__prices")
+        # new_item_price = item.find_element(By.CLASS_NAME, "goods-tile__price-value")
+        print(item_name2.text, old_item_price.text.split("\n"))  # ну и как этой хероты достать прицельно текст конкретного тага?!
+        print()
 
-print("notebook price:", test['offers']["price"])  # получаем значение вложенного словаря с помощью ключей
+    # items = table.find_elements(By.CLASS_NAME, "product-link goods-tile__heading")
+    # print(items)
+
+finally:
+    driver.quit()
