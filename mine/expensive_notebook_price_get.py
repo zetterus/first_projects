@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 import json
 
 URL = "https://rozetka.com.ua/ua/search/?page=4&redirected=1&text="
-PATH = "D:\\python\\first_projects\\not mine\\scraping\\Tech with Tim\\chromedriver.exe"
+PATH = "D:/python/first_projects/chromedriver.exe"
 QUERY = input("TYPE YOUR REQUEST")
 
 service = Service(executable_path=PATH)
