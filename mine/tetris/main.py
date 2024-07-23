@@ -1,6 +1,6 @@
 # modules
-import pygame as PG
-import random as R
+import pygame
+import random
 import time
 
 # settings
@@ -34,16 +34,16 @@ GRAY18 = (46, 46, 46)
 DARK_GREY = (32, 32, 32)
 DARK_SLATE_GREY = (47, 79, 79)
 
-# Initialize the PG
-PG.init()
+# Initialize the pygame
+pygame.init()
 
 # Create the screen
-screen = PG.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Title and Icon
-PG.display.set_caption("Tetris")
-icon = PG.image.load("tetris.png")
-PG.display.set_icon(icon)
+pygame.display.set_caption("Tetris")
+icon = pygame.image.load("tetris.png")
+pygame.display.set_icon(icon)
 
 # starting screen including "start", "options", "records", "exit"
 
@@ -77,15 +77,15 @@ def draw_board(board):
     screen.fill(GRAY18)
     # Draw vertical lines
     for i in range(0, WIDTH, SQUARE_SIZE + LINE_THICKNESS):
-        PG.draw.line(screen, DARK_GREY, (i, 0), (i, HEIGHT), LINE_THICKNESS)
+        pygame.draw.line(screen, DARK_GREY, (i, 0), (i, HEIGHT), LINE_THICKNESS)
     # Draw horizontal lines
     for j in range(0, HEIGHT, SQUARE_SIZE + LINE_THICKNESS):
-        PG.draw.line(screen, DARK_GREY, (0, j), (WIDTH, j), LINE_THICKNESS)
+        pygame.draw.line(screen, DARK_GREY, (0, j), (WIDTH, j), LINE_THICKNESS)
     # Draw borders
-    PG.draw.rect(screen, DARK_SLATE_GREY, (0, 0, SQUARE_SIZE, HEIGHT))  # Rectangle (startx, starty, width, heigth)
-    PG.draw.rect(screen, DARK_SLATE_GREY, (WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, HEIGHT))
-    PG.draw.rect(screen, DARK_SLATE_GREY, (0, 0, WIDTH, SQUARE_SIZE))
-    PG.draw.rect(screen, DARK_SLATE_GREY, (0, HEIGHT - SQUARE_SIZE, WIDTH, SQUARE_SIZE))
+    pygame.draw.rect(screen, DARK_SLATE_GREY, (0, 0, SQUARE_SIZE, HEIGHT))  # Rectangle (startx, starty, width, heigth)
+    pygame.draw.rect(screen, DARK_SLATE_GREY, (WIDTH - SQUARE_SIZE, 0, SQUARE_SIZE, HEIGHT))
+    pygame.draw.rect(screen, DARK_SLATE_GREY, (0, 0, WIDTH, SQUARE_SIZE))
+    pygame.draw.rect(screen, DARK_SLATE_GREY, (0, HEIGHT - SQUARE_SIZE, WIDTH, SQUARE_SIZE))
 
     # Draw info and scoreboard
 
@@ -93,12 +93,16 @@ def draw_board(board):
     for i in range(ROW_COUNT):
         for j in range(COL_COUNT):
             if board[i][j]:
-                PG.draw.rect(screen, BLUE, (
+                pygame.draw.rect(screen, BLUE, (
                     j * (SQUARE_SIZE + LINE_THICKNESS) + LINE_THICKNESS,
                     i * (SQUARE_SIZE + LINE_THICKNESS) + LINE_THICKNESS, SQUARE_SIZE, SQUARE_SIZE))
 
     # Draw the frame
-    PG.display.flip()
+    pygame.display.flip()
+
+
+def pick_random_figure():
+    return FIGURES_LIST[random.choice(("I", "J", "L", "O", "S", "T", "Z"))]
 
 
 def figure_fall(figure, row, col):
@@ -120,17 +124,36 @@ def figure_rotate(figure):
     return temp
 
 
+current_figure = pick_random_figure()
+
 # figures moove in main loop
 # figures collision
 while not GAME_OVER:
-    for event in PG.event.get():
-        if event.type == PG.QUIT:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             GAME_OVER = True
 
-    # this would be main game logic
+    # here would be main game logic
+    # keypress
 
+    # figures falls
+    # Таймер для движения фигуры вниз
+    MOVE_DOWN_DELAY = 1000  # Задержка в миллисекундах
+    last_move_down_time = pygame.time.get_ticks()
+
+    # Движение фигуры вниз
+    current_time = pygame.time.get_ticks()
+    if current_time - last_move_down_time >= MOVE_DOWN_DELAY:
+        figure_fall(current_figure)
+        last_move_down_time = current_time
+
+    # figures collision with walls
+
+    # figures appears
+
+    # figures reach bottom
 
     draw_board(board)
 
-# Quit PG
-PG.quit()
+# Quit pygame
+pygame.quit()
