@@ -57,13 +57,13 @@ class Figure:
             self.rotate()
 
     def spawn(self):  # dunno why separate, not in init, but o want so
-        self.i = 3-self.f_height
+        self.i = 2 - self.f_height
+        # zero rows correction
         for row in reversed(self.form):
             if sum(row):
                 break
             else:
                 self.i += 1
-
         self.j = random.randint(1, board.cols - self.f_width)
 
     def rotate(self):
@@ -78,10 +78,53 @@ class Figure:
     def move(self, diri=0, dirj=0):
         self.i += diri
         self.j += dirj
-        if self.j < 0:
-            self.j = 0
-        if self.j > board.cols - self.f_width:
-            self.j = board.cols - self.f_width
+        # zero cols collision
+        corr_left = 0
+        corr_right = 0
+        for j in range(self.f_width):
+            if any(self.form[i][j] for i in range(self.f_height)):
+                break
+            else:
+                corr_left -= 1
+        for j in range(self.f_width - 1, 0, -1):
+            if any(self.form[i][j] for i in range(self.f_height)):
+                break
+            else:
+                corr_right += 1
+        # another fixed figure side collision
+
+        if self.j < 0 + corr_left:
+            self.j = 0 + corr_left
+        if self.j > board.cols - self.f_width + corr_right:
+            self.j = board.cols - self.f_width + corr_right
+
+    def can_move_down(self):
+        # zero rows correction
+        corr_i = 0
+        for row in reversed(self.form):
+            if sum(row):
+                break
+            else:
+                corr_i += 1
+        Flag = True
+
+        if self.i + 1 > board.rows - self.f_height + corr_i:
+            Flag = False
+
+        for jj in range(self.f_width):
+            print("f_coll", self.i, self.f_height)
+            if board.board[self.i + 1 + self.f_height][self.j + jj] + self.form[-1][jj] == 2:
+                Flag = False
+                break
+
+        return Flag
+
+    def fix_at_board(self):
+        for i in range(self.f_height):
+            if sum(self.form[i]):
+                for j in range(self.f_width):
+                    if self.form[i][j]:
+                        board.board[self.i + i][self.j + j] = self.form[i][j]
 
 
 # board class
@@ -105,13 +148,23 @@ class Board:
         for j in range(0, self.height, self.square_size + self.line_thickness):
             pygame.draw.line(screen, DARK_GREY, (0, j), (self.width, j), self.line_thickness)
 
-        # Draw figures
+        # Draw figure
         for i in range(fig.f_height):
             for j in range(fig.f_width):  # Rectangle (startx, starty, width, heigth)
                 if fig.form[i][j]:
                     pygame.draw.rect(screen, BLUE, (
                         (fig.j + j + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        (fig.i + i - 1) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        (fig.i + i + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        self.square_size,
+                        self.square_size))
+
+        # Draw filled board part
+        for i in range(board.rows):
+            for j in range(board.cols):
+                if board.board[i][j]:
+                    pygame.draw.rect(screen, BLUE, (
+                        (j + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        (i + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
                         self.square_size,
                         self.square_size))
 
@@ -153,6 +206,12 @@ pygame.display.set_icon(icon)
 
 # starting screen including "start", "options", "records", "exit"
 
+# some settings and constants
+# Время последнего перемещения фигуры вниз
+last_move_down_time = pygame.time.get_ticks()
+
+# Задержка между перемещениями фигуры вниз (в миллисекундах)
+MOVE_DOWN_DELAY = 1000
 
 while not GAME_OVER:
 
@@ -177,29 +236,29 @@ while not GAME_OVER:
             # if event.key == DROP:
             #     figure_rotate(current_figure)
 
-            # # figures moves
-            # # CUR_ROW, CUR_COL = figure_spawn(current_figure)
-            # # Таймер для движения фигуры вниз
-            # MOVE_DOWN_DELAY = 1000  # Задержка в миллисекундах
-            # last_move_down_time = pygame.time.get_ticks()
-            #
-            # # Движение фигуры вниз
-            # current_time = pygame.time.get_ticks()
-            # if current_time - last_move_down_time >= MOVE_DOWN_DELAY:
-            #     figure_move(current_figure, CUR_ROW, CUR_COL, 0, 1)
-            #     last_move_down_time = current_time
+    # figures moves
+    # Движение фигуры вниз
+    current_time = pygame.time.get_ticks()
+    if current_time - last_move_down_time >= MOVE_DOWN_DELAY:
+        figure.move(1, 0)
+        last_move_down_time = current_time
 
     # figures appears
 
     # figures reach bottom
+    if not figure.can_move_down():
+        print(figure.i)
+        print("can move down", figure.can_move_down())
+        figure.fix_at_board()
+        figure = Figure()
+        figure.spawn()
 
     # frame draw
-    # figure.i = 5
-    # figure.j = 4
     board.draw(figure)
-    print(figure.i, figure.j, figure.form)
-    # for row in board.board:
-    #     print(row)
+
 
 # Quit pygame
 pygame.quit()
+
+for row in board.board:
+    print(row)
