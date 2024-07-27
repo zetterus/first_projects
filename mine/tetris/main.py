@@ -114,40 +114,57 @@ class Figure:
         self.i += diri
         self.j += dirj
 
-        # walls collision
+    def can_move(self):
+        Flag = True
+        # Walls collisions
+        # left
+        borders_collision = False
         if self.j < 0 - self.f_width[0]:
             self.j = 0 - self.f_width[0]
-        if self.j > board.cols - self.f_width[1] + self.f_width[2]:
-            self.j = board.cols - self.f_width[1] + self.f_width[2]
-        # figures collision
-        # left
-        for ii in range(self.f_height[1]):
-            if board.board[self.i + ii][self.j] + self.form[ii][0 + self.f_width[0]] == 2:
-                self.j += 1
-                break
+            borders_collision = True
+
         # right
-        for ii in range(self.f_height[1]):
-            print("r_coll", self.j, self.f_width[1], self.f_width[2], ii)
-            if (board.board[self.i + ii][self.j + self.f_width[1] - self.f_width[2]-1] +
-                    self.form[ii][-1 - self.f_width[2]] == 2):
-                self.j -= 1
-                break
+        elif self.j > board.cols - self.f_width[1] + self.f_width[2]:
+            self.j = board.cols - self.f_width[1] + self.f_width[2]
+            borders_collision = True
 
-    def can_move_down(self):
-        Flag = True
-
-        # print("bot_reach", self.i + 1, self.f_height[1], self.f_height[2], board.rows)
-        if self.i + 1 + self.f_height[1] - self.f_height[2] > board.rows:
+        # below board
+        elif self.i + self.f_height[1] - self.f_height[2] > board.rows - 1:
+            print("bot_reach", self.i, self.f_height[1], self.f_height[2], board.rows-1)
+            self.i = board.rows - self.f_height[1] + self.f_height[2]
             Flag = False
+            borders_collision = True
 
-        for jj in range(self.f_width[1]):
-            # print("f_coll", self.i , self.f_height[1], self.f_height[2])
-            try:
-                if board.board[self.i + self.f_height[1] - self.f_height[2]][self.j + jj] + self.form[-1][jj] == 2:
+        # Figures collision
+        # left
+        left_collision = False
+        if not borders_collision:
+            for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
+                if board.board[self.i + ii][self.j] + self.form[ii][0 + self.f_width[0]] == 2:
+                    print("l_coll", self.i, self.j, self.f_width[0], self.f_height[1], self.f_height[2], ii)
+                    self.j += 1
+                    left_collision = True
+                    break
+
+        # right
+        right_collision = False
+        if not left_collision:
+            for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
+                if (board.board[self.i + ii][self.j + self.f_width[1] - self.f_width[2] - 1] +
+                        self.form[ii][-1 - self.f_width[2]] == 2):
+                    print("r_coll", self.j, self.f_width[1], self.f_width[2], ii)
+                    self.j -= 1
+                    right_collision = True
+                    break
+
+        # bottom
+        if not right_collision:
+            for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
+                if board.board[self.i + self.f_height[1] - self.f_height[2] - 1][self.j + jj] + self.form[-1][jj] == 2:
+                    print("bot_row", self.i, self.f_height[1], self.f_height[2], self.j, jj)
+                    self.i -= 1
                     Flag = False
                     break
-            except:
-                pass
 
         return Flag
 
@@ -278,9 +295,10 @@ while not GAME_OVER:
     # figures appears
 
     # figures reach bottom
-    if not figure.can_move_down():
+    result = figure.can_move()
+    if not result:
         print(figure.i)
-        print("can move down", figure.can_move_down())
+        print("can move down", result)
         figure.fix_at_board()
         figure = Figure()
         figure.spawn()
