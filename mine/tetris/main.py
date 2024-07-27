@@ -51,20 +51,50 @@ class Figure:
         self.i = None
         self.j = None
         self.form = self.__class__.FORMAS_LIST[random.choice(("I", "J", "L", "O", "S", "T", "Z"))]
-        self.f_width = len(self.form[0])
-        self.f_height = len(self.form)
+        self.f_width = (self.hitbox()["left"], len(self.form[0]),
+                        self.hitbox()["right"])  # -left zero cols, filled cols, right zero cols
+        self.f_height = (
+            self.hitbox()["up"], len(self.form),
+            self.hitbox()["bottom"])  # upper zero rows, filled rows, bottom zero rows
         for _ in range(4):
             self.rotate()
 
-    def spawn(self):  # dunno why separate, not in init, but o want so
-        self.i = 2 - self.f_height
-        # zero rows correction
+    def hitbox(self):
+        left_zero_cols = 0
+        for j in range(len(self.form[0])):
+            if any(self.form[i][j] for i in range(len(self.form))):
+                break
+            else:
+                left_zero_cols += 1
+        right_zero_cols = 0
+        for j in range(len(self.form[0]) - 1, 0, -1):
+            if any(self.form[i][j] for i in range(len(self.form))):
+                break
+            else:
+                right_zero_cols += 1
+        corr_i_up = 0
+        for row in self.form:
+            if sum(row):
+                break
+            else:
+                corr_i_up += 1
+        corr_i_bot = 0
         for row in reversed(self.form):
             if sum(row):
                 break
             else:
-                self.i += 1
-        self.j = random.randint(1, board.cols - self.f_width)
+                corr_i_bot += 1
+        return {"left": left_zero_cols, "right": right_zero_cols, "up": corr_i_up, "bottom": corr_i_bot}
+
+    def spawn(self):  # dunno why separate, not in init, but o want so
+        self.i = 2 - self.f_height[1]
+        # # zero rows correction
+        # for row in reversed(self.form):
+        #     if sum(row):
+        #         break
+        #     else:
+        #         self.i += 1
+        self.j = random.randint(1 - self.f_width[0], board.cols - self.f_width[1] + self.f_width[2])
 
     def rotate(self):
         side_size = len(self.form)
@@ -73,56 +103,58 @@ class Figure:
             for j in range(side_size):
                 temp[j][(side_size - 1) - i] = self.form[i][j]
         self.form = temp
+        self.f_width = (self.hitbox()["left"], len(self.form[0]),
+                        self.hitbox()["right"])  # -left zero cols, filled cols, right zero cols
+        self.f_height = (
+            self.hitbox()["up"], len(self.form),
+            self.hitbox()["bottom"])  # upper zero rows, filled rows, bottom zero rows
         # return temp ???
 
     def move(self, diri=0, dirj=0):
         self.i += diri
         self.j += dirj
-        # zero cols collision
-        corr_left = 0
-        corr_right = 0
-        for j in range(self.f_width):
-            if any(self.form[i][j] for i in range(self.f_height)):
-                break
-            else:
-                corr_left -= 1
-        for j in range(self.f_width - 1, 0, -1):
-            if any(self.form[i][j] for i in range(self.f_height)):
-                break
-            else:
-                corr_right += 1
-        # another fixed figure side collision
 
-        if self.j < 0 + corr_left:
-            self.j = 0 + corr_left
-        if self.j > board.cols - self.f_width + corr_right:
-            self.j = board.cols - self.f_width + corr_right
+        # walls collision
+        if self.j < 0 - self.f_width[0]:
+            self.j = 0 - self.f_width[0]
+        if self.j > board.cols - self.f_width[1] + self.f_width[2]:
+            self.j = board.cols - self.f_width[1] + self.f_width[2]
+        # figures collision
+        # left
+        for ii in range(self.f_height[1]):
+            if board.board[self.i + ii][self.j] + self.form[ii][0 + self.f_width[0]] == 2:
+                self.j += 1
+                break
+        # right
+        for ii in range(self.f_height[1]):
+            print("r_coll", self.j, self.f_width[1], self.f_width[2], ii)
+            if (board.board[self.i + ii][self.j + self.f_width[1] - self.f_width[2]-1] +
+                    self.form[ii][-1 - self.f_width[2]] == 2):
+                self.j -= 1
+                break
 
     def can_move_down(self):
-        # zero rows correction
-        corr_i = 0
-        for row in reversed(self.form):
-            if sum(row):
-                break
-            else:
-                corr_i += 1
         Flag = True
 
-        if self.i + 1 > board.rows - self.f_height + corr_i:
+        # print("bot_reach", self.i + 1, self.f_height[1], self.f_height[2], board.rows)
+        if self.i + 1 + self.f_height[1] - self.f_height[2] > board.rows:
             Flag = False
 
-        for jj in range(self.f_width):
-            print("f_coll", self.i, self.f_height)
-            if board.board[self.i + 1 + self.f_height][self.j + jj] + self.form[-1][jj] == 2:
-                Flag = False
-                break
+        for jj in range(self.f_width[1]):
+            # print("f_coll", self.i , self.f_height[1], self.f_height[2])
+            try:
+                if board.board[self.i + self.f_height[1] - self.f_height[2]][self.j + jj] + self.form[-1][jj] == 2:
+                    Flag = False
+                    break
+            except:
+                pass
 
         return Flag
 
     def fix_at_board(self):
-        for i in range(self.f_height):
+        for i in range(self.f_height[1]):
             if sum(self.form[i]):
-                for j in range(self.f_width):
+                for j in range(self.f_width[1]):
                     if self.form[i][j]:
                         board.board[self.i + i][self.j + j] = self.form[i][j]
 
@@ -149,8 +181,8 @@ class Board:
             pygame.draw.line(screen, DARK_GREY, (0, j), (self.width, j), self.line_thickness)
 
         # Draw figure
-        for i in range(fig.f_height):
-            for j in range(fig.f_width):  # Rectangle (startx, starty, width, heigth)
+        for i in range(fig.f_height[1]):
+            for j in range(fig.f_width[1]):  # Rectangle (startx, starty, width, heigth)
                 if fig.form[i][j]:
                     pygame.draw.rect(screen, BLUE, (
                         (fig.j + j + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
@@ -255,7 +287,6 @@ while not GAME_OVER:
 
     # frame draw
     board.draw(figure)
-
 
 # Quit pygame
 pygame.quit()
