@@ -86,14 +86,8 @@ class Figure:
                 corr_i_bot += 1
         return {"left": left_zero_cols, "right": right_zero_cols, "up": corr_i_up, "bottom": corr_i_bot}
 
-    def spawn(self):  # dunno why separate, not in init, but o want so
-        self.i = 2 - self.f_height[1]
-        # # zero rows correction
-        # for row in reversed(self.form):
-        #     if sum(row):
-        #         break
-        #     else:
-        #         self.i += 1
+    def spawn(self):  # dunno why separate, not in init, but I want so
+        self.i = 5 - self.f_height[1] + self.f_height[2]
         self.j = random.randint(1 - self.f_width[0], board.cols - self.f_width[1] + self.f_width[2])
 
     def rotate(self):
@@ -114,74 +108,61 @@ class Figure:
         self.i += diri
         self.j += dirj
 
-    def can_move(self):
-        Flag = True
-        # Walls collisions
-        # left
-        borders_collision = False
-        if self.j < 0 - self.f_width[0]:
-            self.j = 0 - self.f_width[0]
-            borders_collision = True
+    # Figures collision
+    # left
+    def can_move_left(self):
+        for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
+            if board.board[self.i + ii][self.j - 1] + self.form[ii][0 + self.f_width[0]] == 2:
+                print("l_coll", self.i, self.j, self.f_width[0], self.f_height[1], self.f_height[2], ii)
+                return False
+                break
 
-        # right
-        elif self.j > board.cols - self.f_width[1] + self.f_width[2]:
-            self.j = board.cols - self.f_width[1] + self.f_width[2]
-            borders_collision = True
+        return True
 
-        # below board
-        elif self.i + self.f_height[1] - self.f_height[2] > board.rows - 1:
-            print("bot_reach", self.i, self.f_height[1], self.f_height[2], board.rows-1)
-            self.i = board.rows - self.f_height[1] + self.f_height[2]
-            Flag = False
-            borders_collision = True
+    # right
+    def can_move_right(self):
+        for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
+            if (board.board[self.i + ii][self.j + self.f_width[1] - self.f_width[2]] +
+                    self.form[ii][-1 - self.f_width[2]] == 2):
+                print("r_coll", self.j, self.f_width[1], self.f_width[2], ii)
+                return False
 
-        # Figures collision
-        # left
-        left_collision = False
-        if not borders_collision:
-            for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
-                if board.board[self.i + ii][self.j] + self.form[ii][0 + self.f_width[0]] == 2:
-                    print("l_coll", self.i, self.j, self.f_width[0], self.f_height[1], self.f_height[2], ii)
-                    self.j += 1
-                    left_collision = True
-                    break
+        return True
 
-        # right
-        right_collision = False
-        if not left_collision:
-            for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
-                if (board.board[self.i + ii][self.j + self.f_width[1] - self.f_width[2] - 1] +
-                        self.form[ii][-1 - self.f_width[2]] == 2):
-                    print("r_coll", self.j, self.f_width[1], self.f_width[2], ii)
-                    self.j -= 1
-                    right_collision = True
-                    break
+    # bottom
+    def can_move_down(self):
+        for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
+            if board.board[self.i + self.f_height[1] - self.f_height[2]][self.j + jj] + self.form[-1][jj] == 2:
+                print("b_coll", self.i, self.j, self.f_height[1], self.f_height[2], jj)
+                return False
 
-        # bottom
-        if not right_collision:
+        return True
+
+    def can_rotate(self):
+        temp = figure.form
+        figure.rotate()
+        for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
             for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
-                if board.board[self.i + self.f_height[1] - self.f_height[2] - 1][self.j + jj] + self.form[-1][jj] == 2:
-                    print("bot_row", self.i, self.f_height[1], self.f_height[2], self.j, jj)
-                    self.i -= 1
-                    Flag = False
-                    break
+                if board.board[self.i + ii][self.j + jj] + figure.form[ii][jj] == 2:
+                    figure.form = temp
+                    return False
 
-        return Flag
+        figure.form = temp
+        return True
 
     def fix_at_board(self):
-        for i in range(self.f_height[1]):
-            if sum(self.form[i]):
-                for j in range(self.f_width[1]):
-                    if self.form[i][j]:
-                        board.board[self.i + i][self.j + j] = self.form[i][j]
+        for ii in range(self.f_height[1]):
+            for jj in range(self.f_width[1]):
+                if self.form[ii][jj]:
+                    board.board[self.i + ii][self.j + jj] = self.form[ii][jj]
 
 
 # board class
 class Board:
     def __init__(self, rows=20, cols=10, square_size=40, line_thickness=2):
-        self.board = [[0] * cols for _ in range(rows)]
-        self.rows = rows
-        self.cols = cols
+        self.board = [[1] + [0] * cols + [1] if i != rows + 3 else [1] * (cols + 2) for i in range(rows + 4)]
+        self.rows = rows + 2
+        self.cols = cols + 2
         self.square_size = square_size
         self.line_thickness = line_thickness
         self.width = cols * (square_size + line_thickness) + square_size * 2 + line_thickness * 3
@@ -202,8 +183,8 @@ class Board:
             for j in range(fig.f_width[1]):  # Rectangle (startx, starty, width, heigth)
                 if fig.form[i][j]:
                     pygame.draw.rect(screen, BLUE, (
-                        (fig.j + j + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        (fig.i + i + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        (fig.j + j) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        (fig.i + i - 3) * (self.square_size + self.line_thickness) + self.line_thickness,
                         self.square_size,
                         self.square_size))
 
@@ -212,24 +193,24 @@ class Board:
             for j in range(board.cols):
                 if board.board[i][j]:
                     pygame.draw.rect(screen, BLUE, (
-                        (j + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        (i + 1) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        j * (self.square_size + self.line_thickness) + self.line_thickness,
+                        i * (self.square_size + self.line_thickness) + self.line_thickness,
                         self.square_size,
                         self.square_size))
 
-        # Draw borders
-        pygame.draw.rect(screen, DARK_SLATE_GREY,
-                         (0, 0, self.square_size + self.line_thickness,
-                          self.height))  # Rectangle (startx, starty, width, heigth)
-        pygame.draw.rect(screen, DARK_SLATE_GREY,
-                         (
-                             self.width - self.square_size - self.line_thickness, 0,
-                             self.square_size + self.line_thickness,
-                             self.height))
-        pygame.draw.rect(screen, DARK_SLATE_GREY, (0, 0, self.width, self.square_size + self.line_thickness))
-        pygame.draw.rect(screen, DARK_SLATE_GREY,
-                         (0, self.height - self.square_size - self.line_thickness, self.width,
-                          self.square_size + self.line_thickness))
+        # # Draw borders
+        # pygame.draw.rect(screen, DARK_SLATE_GREY,
+        #                  (0, 0, self.square_size + self.line_thickness,
+        #                   self.height))  # Rectangle (startx, starty, width, heigth)
+        # pygame.draw.rect(screen, DARK_SLATE_GREY,
+        #                  (
+        #                      self.width - self.square_size - self.line_thickness, 0,
+        #                      self.square_size + self.line_thickness,
+        #                      self.height))
+        # pygame.draw.rect(screen, DARK_SLATE_GREY, (0, 0, self.width, self.square_size + self.line_thickness))
+        # pygame.draw.rect(screen, DARK_SLATE_GREY,
+        #                  (0, self.height - self.square_size - self.line_thickness, self.width,
+        #                   self.square_size + self.line_thickness))
 
         # Draw info and scoreboard
 
@@ -274,13 +255,13 @@ while not GAME_OVER:
 
             # keyboard controls
         if event.type == pygame.KEYDOWN:
-            if event.key == LEFT:
+            if event.key == LEFT and figure.can_move_left():
                 figure.move(0, -1)
-            if event.key == RIGHT:
+            if event.key == RIGHT and figure.can_move_right():
                 figure.move(0, 1)
-            if event.key == DOWN:
+            if event.key == DOWN and figure.can_move_down():
                 figure.move(1, 0)
-            if event.key == ROTATE:
+            if event.key == ROTATE and figure.can_rotate():
                 figure.rotate()
             # if event.key == DROP:
             #     figure_rotate(current_figure)
@@ -289,25 +270,31 @@ while not GAME_OVER:
     # Движение фигуры вниз
     current_time = pygame.time.get_ticks()
     if current_time - last_move_down_time >= MOVE_DOWN_DELAY:
-        figure.move(1, 0)
+        if figure.can_move_down():
+            figure.move(1, 0)
+        else:
+            figure.fix_at_board()
+            figure.spawn()
         last_move_down_time = current_time
 
-    # figures appears
-
-    # figures reach bottom
-    result = figure.can_move()
+    # # figures reach bottom
+    result = figure.can_move_down()
     if not result:
-        print(figure.i)
         print("can move down", result)
         figure.fix_at_board()
         figure = Figure()
-        figure.spawn()
+        figure.spawn()  # figures appears
+
+    # # figures walls collision
+    # else:
+    #     figure.can_move_side()
 
     # frame draw
     board.draw(figure)
 
 # Quit pygame
 pygame.quit()
+print(figure.i, figure.j, figure.form)
 
 for row in board.board:
     print(row)
