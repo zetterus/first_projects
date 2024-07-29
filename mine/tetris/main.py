@@ -87,8 +87,10 @@ class Figure:
         return {"left": left_zero_cols, "right": right_zero_cols, "up": corr_i_up, "bottom": corr_i_bot}
 
     def spawn(self):  # dunno why separate, not in init, but I want so
-        self.i = 5 - self.f_height[1] + self.f_height[2]
-        self.j = random.randint(1 - self.f_width[0], board.cols - self.f_width[1] + self.f_width[2])
+        self.i = 4 - self.f_height[1] + self.f_height[2]
+        J = random.randint(1 - self.f_width[0], board.cols - self.f_width[1] + self.f_width[2])
+        print(self.f_width[0], board.cols, self.f_width[1], self.f_width[2])
+        self.j = J
 
     def rotate(self):
         side_size = len(self.form)
@@ -132,9 +134,10 @@ class Figure:
     # bottom
     def can_move_down(self):
         for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
-            print("b_coll", self.i, self.j, self.f_height[1], self.f_height[2], jj)
+            # print("b_coll", self.i, self.j, self.f_height[1], self.f_height[2], jj, "|", self.f_width[0], self.f_width[1], self.f_width[2])
             if board.board[self.i + self.f_height[1] - self.f_height[2]][self.j + jj] + self.form[-1][jj] == 2:
-                print("b_coll", self.i, self.j, self.f_height[1], self.f_height[2], jj)
+                print("b_coll", self.i, self.j, self.f_height[1], self.f_height[2], jj, "|", self.f_width[0],
+                      self.f_width[1], self.f_width[2])
                 return False
 
         return True
@@ -152,8 +155,8 @@ class Figure:
         return True
 
     def fix_at_board(self):
-        for ii in range(self.f_height[1]):
-            for jj in range(self.f_width[1]):
+        for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
+            for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
                 if self.form[ii][jj]:
                     board.board[self.i + ii][self.j + jj] = self.form[ii][jj]
 
@@ -162,22 +165,22 @@ class Figure:
 class Board:
     def __init__(self, rows=20, cols=10, square_size=40, line_thickness=2):
         self.board = [[1] + [0] * cols + [1] if i != rows + 3 else [1] * (cols + 2) for i in range(rows + 4)]
-        self.rows = rows + 2
-        self.cols = cols + 2
+        self.rows = len(self.board) - 2
+        self.cols = len(self.board[0])
         self.square_size = square_size
         self.line_thickness = line_thickness
-        self.width = cols * (square_size + line_thickness) + square_size * 2 + line_thickness * 3
-        self.height = rows * (square_size + line_thickness) + square_size * 2 + line_thickness * 3
+        self.width = self.cols * (self.square_size + self.line_thickness) + self.line_thickness
+        self.height = self.rows * (self.square_size + self.line_thickness) + self.line_thickness
 
     def draw(self, fig):
         # Fill the background
         screen.fill(GRAY18)
         # Draw vertical lines
-        for i in range(0, self.width, self.square_size + self.line_thickness):
-            pygame.draw.line(screen, DARK_GREY, (i, 0), (i, self.height), self.line_thickness)
+        for j in range(0, self.width, self.square_size + self.line_thickness):
+            pygame.draw.line(screen, DARK_GREY, (j, 0), (j, self.height), self.line_thickness)
         # Draw horizontal lines
-        for j in range(0, self.height, self.square_size + self.line_thickness):
-            pygame.draw.line(screen, DARK_GREY, (0, j), (self.width, j), self.line_thickness)
+        for i in range(0, self.height, self.square_size + self.line_thickness):
+            pygame.draw.line(screen, DARK_GREY, (0, i), (self.width, i), self.line_thickness)
 
         # Draw figure
         for i in range(fig.f_height[1]):
@@ -185,14 +188,14 @@ class Board:
                 if fig.form[i][j]:
                     pygame.draw.rect(screen, BLUE, (
                         (fig.j + j) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        (fig.i + i - 3) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        (fig.i + i) * (self.square_size + self.line_thickness) + self.line_thickness,
                         self.square_size,
                         self.square_size))
 
         # Draw filled board part
         for i in range(board.rows):
             for j in range(board.cols):
-                if board.board[i][j]:
+                if board.board[i+2][j]:
                     pygame.draw.rect(screen, BLUE, (
                         j * (self.square_size + self.line_thickness) + self.line_thickness,
                         i * (self.square_size + self.line_thickness) + self.line_thickness,
@@ -260,12 +263,18 @@ while not GAME_OVER:
                 figure.move(0, -1)
             if event.key == RIGHT and figure.can_move_right():
                 figure.move(0, 1)
-            if event.key == DOWN and figure.can_move_down():
-                figure.move(1, 0)
+            if event.key == DOWN:
+                if figure.can_move_down():
+                    figure.move(1, 0)
+                else:
+                    figure.fix_at_board()
+                    figure.spawn()
             if event.key == ROTATE and figure.can_rotate():
                 figure.rotate()
             # if event.key == DROP:
             #     figure_rotate(current_figure)
+            if event.key == pygame.K_i:
+                print(figure.i, figure.j)
 
     # figures moves
     # Движение фигуры вниз
@@ -277,6 +286,7 @@ while not GAME_OVER:
             figure.fix_at_board()
             figure.spawn()
         last_move_down_time = current_time
+        # print(figure.i)
 
     # # figures reach bottom
     result = figure.can_move_down()

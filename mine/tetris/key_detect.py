@@ -33,6 +33,8 @@ while True:
             if event.key in key_names:  # Проверяем, есть ли клавиша в словаре
                 key_name = key_names[event.key]
                 print(f"{key_name}, pygame.K_{key_name.upper()}")  # Выводим название и код клавиши
+            if event.key == pygame.K_i:
+                print("i", "K_i")
 
     # Очистка экрана
     screen.fill((0, 0, 0))
