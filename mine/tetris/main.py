@@ -87,9 +87,9 @@ class Figure:
         return {"left": left_zero_cols, "right": right_zero_cols, "up": corr_i_up, "bottom": corr_i_bot}
 
     def spawn(self):  # dunno why separate, not in init, but I want so
-        self.i = 4 - self.f_height[1] + self.f_height[2]
+        self.i = -self.f_height[1] + self.f_height[2]
         J = random.randint(1 - self.f_width[0], board.cols - self.f_width[1] + self.f_width[2])
-        print(self.f_width[0], board.cols, self.f_width[1], self.f_width[2])
+        print(J, self.i, self.f_width[0], board.cols, self.f_width[1], self.f_width[2])
         self.j = J
 
     def rotate(self):
@@ -286,7 +286,7 @@ while not GAME_OVER:
             figure.fix_at_board()
             figure.spawn()
         last_move_down_time = current_time
-        # print(figure.i)
+        print(figure.i)
 
     # # figures reach bottom
     result = figure.can_move_down()
