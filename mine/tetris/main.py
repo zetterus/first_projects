@@ -112,7 +112,7 @@ class Figure:
     # left
     def can_move_left(self):
         for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
-            if board.board[self.i + ii][self.j - 1] + self.form[ii][0 + self.f_width[0]] == 2:
+            if board.board[self.i + ii][self.j - 1 + self.f_width[0]] + self.form[ii][0 + self.f_width[0]] == 2:
                 print("l_coll", self.i, self.j, self.f_width[0], self.f_height[1], self.f_height[2], ii)
                 return False
                 break
@@ -132,6 +132,7 @@ class Figure:
     # bottom
     def can_move_down(self):
         for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
+            print("b_coll", self.i, self.j, self.f_height[1], self.f_height[2], jj)
             if board.board[self.i + self.f_height[1] - self.f_height[2]][self.j + jj] + self.form[-1][jj] == 2:
                 print("b_coll", self.i, self.j, self.f_height[1], self.f_height[2], jj)
                 return False
