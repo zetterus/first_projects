@@ -172,6 +172,27 @@ class Board:
         self.line_thickness = line_thickness
         self.width = self.cols * (self.square_size + self.line_thickness) + self.line_thickness
         self.height = self.rows * (self.square_size + self.line_thickness) + self.line_thickness
+        self.score = 0
+
+    def draw_figure(self, fig):
+        for i in range(fig.f_height[1]):
+            for j in range(fig.f_width[1]):  # Rectangle (startx, starty, width, heigth)
+                if fig.form[i][j]:
+                    pygame.draw.rect(screen, BLUE, (
+                        (fig.j + j) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        (fig.i + i - 2) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        self.square_size,
+                        self.square_size))
+
+    def full_row(self):
+        for i in range(-2, -(self.rows + 1), -1):
+            if sum(board.board[i]) == self.cols - 2:
+                board.board[-self.rows - 1: i] = board.board[-self.rows - 2: i - 1]
+                self.score += 1
+                break
+
+    def filled(self):
+        return 1 in self.board[3][1:11]
 
     def draw(self, fig):
         # Fill the background
@@ -184,14 +205,7 @@ class Board:
             pygame.draw.line(screen, DARK_GREY, (0, i), (self.width, i), self.line_thickness)
 
         # Draw figure
-        for i in range(fig.f_height[1]):
-            for j in range(fig.f_width[1]):  # Rectangle (startx, starty, width, heigth)
-                if fig.form[i][j]:
-                    pygame.draw.rect(screen, BLUE, (
-                        (fig.j + j) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        (fig.i + i - 2) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        self.square_size,
-                        self.square_size))
+        self.draw_figure(figure)
 
         # Draw filled board part
         for i in range(board.rows):
@@ -203,39 +217,67 @@ class Board:
                         self.square_size,
                         self.square_size))
 
-        # # Draw borders
-        # pygame.draw.rect(screen, DARK_SLATE_GREY,
-        #                  (0, 0, self.square_size + self.line_thickness,
-        #                   self.height))  # Rectangle (startx, starty, width, heigth)
-        # pygame.draw.rect(screen, DARK_SLATE_GREY,
-        #                  (
-        #                      self.width - self.square_size - self.line_thickness, 0,
-        #                      self.square_size + self.line_thickness,
-        #                      self.height))
-        # pygame.draw.rect(screen, DARK_SLATE_GREY, (0, 0, self.width, self.square_size + self.line_thickness))
-        # pygame.draw.rect(screen, DARK_SLATE_GREY,
-        #                  (0, self.height - self.square_size - self.line_thickness, self.width,
-        #                   self.square_size + self.line_thickness))
+        # Draw borders
+        # left border
+        pygame.draw.rect(screen, DARK_SLATE_GREY,
+                         (0, 0, self.square_size + self.line_thickness,
+                          self.height))  # Rectangle (startx, starty, width, heigth)
+        # right border
+        pygame.draw.rect(screen, DARK_SLATE_GREY,
+                         (
+                             self.width - self.square_size - self.line_thickness, 0,
+                             (self.square_size + self.line_thickness) * self.cols // 2,
+                             self.height))
+        # upper border
+        pygame.draw.rect(screen, DARK_SLATE_GREY, (0, 0, self.width, self.square_size + self.line_thickness))
+        # bottom border
+        pygame.draw.rect(screen, DARK_SLATE_GREY,
+                         (0, self.height - self.square_size - self.line_thickness, self.width,
+                          self.square_size + self.line_thickness))
 
-        # Draw info and scoreboard
+        # Draw score and next figure
+        # score text
+        font = pygame.font.SysFont("arial.ttf", 48)
+        score_text = font.render("SCORE:", True, BLACK, GRAY18)
+        score_text_rect = score_text.get_rect()
+        score_text_rect.center = (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
+                                  self.line_thickness + (self.square_size + self.line_thickness) * 3)
+        screen.blit(score_text, score_text_rect)
+        # score int
+        font = pygame.font.SysFont("arial.ttf", 48)
+        score_int = font.render(f"{self.score}", True, BLACK, GRAY18)
+        score_int_rect = score_int.get_rect()
+        score_int_rect.center = (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
+                                 self.line_thickness + (self.square_size + self.line_thickness) * 4)
+        screen.blit(score_int, score_int_rect)
+        # next figure text
+        font = pygame.font.SysFont("arial.ttf", 36)
+        next_figure_text = font.render("NEXT FIGURE", True, BLACK, GRAY18)
+        next_figure_text_rect = next_figure_text.get_rect()
+        next_figure_text_rect.center = (
+        self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
+        self.line_thickness + (self.square_size + self.line_thickness) * 6)
+        screen.blit(next_figure_text, next_figure_text_rect)
+        # next figure form
+        next_figure.i = 10
+        next_figure.j = self.cols
+        self.draw_figure(next_figure)
 
         # Draw the frame
         pygame.display.flip()
-
-    def filled(self):
-        return 1 in self.board[3][1:11]
 
 
 # initializing objects
 board = Board()
 figure = Figure()
+next_figure = Figure()
 figure.spawn()
 
 # Initialize the pygame
 pygame.init()
 
 # Create the screen
-screen = pygame.display.set_mode((board.width, board.height))
+screen = pygame.display.set_mode(((board.width) * 1.5 - (board.square_size + board.line_thickness), board.height))
 
 # Title and Icon
 pygame.display.set_caption("Tetris")
@@ -273,11 +315,19 @@ while not GAME_OVER:
                     figure.move(1, 0)
                 else:
                     figure.fix_at_board()
+                    figure = next_figure
                     figure.spawn()
+                    next_figure = Figure()
             if event.key == ROTATE and figure.can_rotate():
                 figure.rotate()
-            # if event.key == DROP:
-            #     figure_rotate(current_figure)
+            if event.key == DROP:
+                while figure.can_move_down():
+                    figure.move(1, 0)
+                else:
+                    figure.fix_at_board()
+                    figure = next_figure
+                    figure.spawn()
+                    next_figure = Figure()
             if event.key == pygame.K_i:
                 print(figure.i, figure.j)
 
@@ -289,7 +339,9 @@ while not GAME_OVER:
             figure.move(1, 0)
         else:
             figure.fix_at_board()
+            figure = next_figure
             figure.spawn()
+            next_figure = Figure()
         last_move_down_time = current_time
         print(figure.i)
 
@@ -298,12 +350,15 @@ while not GAME_OVER:
     if not result:
         print("can move down", result)
         figure.fix_at_board()
-        figure = Figure()
-        figure.spawn()  # figures appears
+        figure = next_figure
+        figure.spawn()
+        next_figure = Figure()
 
     # filling reach top
     if board.filled():
         GAME_OVER = True
+
+    board.full_row()
 
     # frame draw
     board.draw(figure)
