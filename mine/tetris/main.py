@@ -88,7 +88,8 @@ class Figure:
 
     def spawn(self):  # dunno why separate, not in init, but I want so
         self.i = 4 - self.f_height[1] + self.f_height[2]
-        J = random.randint(1 - self.f_width[0], board.cols - 1 - self.f_width[1] + self.f_width[2])  # -1 to consider a right border
+        J = random.randint(1 - self.f_width[0],
+                           board.cols - 1 - self.f_width[1] + self.f_width[2])  # -1 to consider a right border
         print("spawn", self.i, J, self.form, self.f_width[0], self.f_width[1], self.f_width[2])
         self.j = J
 
@@ -113,21 +114,21 @@ class Figure:
     # Figures collision
     # left
     def can_move_left(self):
-        for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
-            if board.board[self.i + ii][self.j - 1 + self.f_width[0]] + self.form[ii][0 + self.f_width[0]] == 2:
-                print("l_coll", self.i, self.j, self.f_width[0], self.f_height[1], self.f_height[2], ii)
-                return False
-                break
+        for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
+            for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
+                if board.board[self.i + ii][self.j - 1 + jj] + self.form[ii][jj] == 2:
+                    print("l_coll", self.i, self.j, self.f_width[0], self.f_height[1], self.f_height[2], ii)
+                    return False
 
         return True
 
     # right
     def can_move_right(self):
-        for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
-            if (board.board[self.i + ii][self.j + self.f_width[1] - self.f_width[2]] +
-                    self.form[ii][-1 - self.f_width[2]] == 2):
-                print("r_coll", self.j, self.f_width[1], self.f_width[2], ii)
-                return False
+        for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
+            for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
+                if board.board[self.i + ii][self.j + 1 + jj] + self.form[ii][jj] == 2:
+                    print("r_coll", self.i, self.j, self.f_width[1], self.f_width[2], ii, jj)
+                    return False
 
         return True
 
@@ -135,22 +136,10 @@ class Figure:
     def can_move_down(self):
         for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
             for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
-                # print("b_coll", self.i + self.f_height[1] - self.f_height[2], self.i, self.j, self.f_height[1], self.f_height[2], jj, "|", self.f_width[0], self.f_width[1], self.f_width[2])
-                if board.board[self.i + self.f_height[1] - self.f_height[2] - ii][self.j + jj] + self.form[-1 - self.f_height[2] - ii][jj] == 2:
-                    print("b_coll", self.i + self.f_height[1] - self.f_height[2], self.i, self.j, self.f_height[1], self.f_height[2], jj, "|", self.f_width[0],
-                          self.f_width[1], self.f_width[2])
+                # print("b_coll", self.i, self.j, ii, jj)
+                if board.board[self.i + 1 + ii][self.j + jj] + self.form[ii][jj] == 2:
+                    print("b_coll", self.i, self.j, ii, jj)
                     return False
-
-        return True
-
-    # its only last row
-    # def can_move_down(self):
-    #     for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
-    #         print("b_coll", self.i + self.f_height[1] - self.f_height[2], self.i, self.j, self.f_height[1], self.f_height[2], jj, "|", self.f_width[0], self.f_width[1], self.f_width[2])
-    #         if board.board[self.i + self.f_height[1] - self.f_height[2]][self.j + jj] + self.form[-1 - self.f_height[2]][jj] == 2:
-    #             print("b_coll", self.i + self.f_height[1] - self.f_height[2], self.i, self.j, self.f_height[1], self.f_height[2], jj, "|", self.f_width[0],
-    #                   self.f_width[1], self.f_width[2])
-    #             return False
 
         return True
 
@@ -200,7 +189,7 @@ class Board:
                 if fig.form[i][j]:
                     pygame.draw.rect(screen, BLUE, (
                         (fig.j + j) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        (fig.i + i-2) * (self.square_size + self.line_thickness) + self.line_thickness,
+                        (fig.i + i - 2) * (self.square_size + self.line_thickness) + self.line_thickness,
                         self.square_size,
                         self.square_size))
 
