@@ -184,17 +184,20 @@ class Board:
                         self.square_size,
                         self.square_size))
 
-    def full_row(self):  # finish it!
+    def full_row(self, last_row):  # finish it!
         score_add = 0
-        for i in range(-2, -(self.rows + 1), -1):
-            for ii in range(4):  # longest figure
-                if all(board.board[i - ii]):
-                    score_add += 1
-                else:
-                    board.board[-self.rows + 1:i + 1] = board.board[-self.rows:i-ii]
-                    while len(board.board) < self.rows + 2:
-                        board.board.insert(0, [1] + [0] * (self.cols - 2) + [1])
-                    break
+        for i in range(last_row, last_row - 5, -1):  # 4 - longest figure
+            if all(board.board[i]):
+                print("full_row_if", i)
+                score_add += last_row - i + 1
+            elif score_add:
+                print("full_row_elif", i)
+                new_upper_rows = [board.board[0] for _ in range(last_row - i)]
+                new_middle_rows = board.board[0:i + 1]
+                old_bottom_rows = board.board[last_row + 1:]
+                board.board = new_upper_rows + new_middle_rows + old_bottom_rows
+                self.score += score_add
+                break
 
     def filled(self):
         return 1 in self.board[3][1:11]
@@ -222,7 +225,7 @@ class Board:
                         self.square_size,
                         self.square_size))
 
-        # Draw borders
+        # Draw board borders
         # left border
         pygame.draw.rect(screen, DARK_SLATE_GREY,
                          (0, 0, self.square_size + self.line_thickness,
@@ -243,30 +246,89 @@ class Board:
         # Draw score and next figure
         # score text
         font = pygame.font.SysFont("arial.ttf", 48)
-        score_text = font.render("SCORE:", True, BLACK, GRAY18)
+        score_text = font.render("SCORE:", True, BLACK, DARK_SLATE_GREY)
         score_text_rect = score_text.get_rect()
         score_text_rect.center = (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
-                                  self.line_thickness + (self.square_size + self.line_thickness) * 3)
+                                  self.line_thickness + (self.square_size + self.line_thickness) * 2)
         screen.blit(score_text, score_text_rect)
         # score int
         font = pygame.font.SysFont("arial.ttf", 48)
-        score_int = font.render(f"{self.score}", True, BLACK, GRAY18)
+        score_int = font.render(f"{self.score}", True, BLACK, DARK_SLATE_GREY)
         score_int_rect = score_int.get_rect()
-        score_int_rect.center = (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
-                                 self.line_thickness + (self.square_size + self.line_thickness) * 4)
+        score_int_rect.topright = (
+            self.line_thickness * 2 + (self.square_size + self.line_thickness) * (self.cols + 3.5),
+            self.line_thickness + (self.square_size + self.line_thickness) * 3)
         screen.blit(score_int, score_int_rect)
         # next figure text
         font = pygame.font.SysFont("arial.ttf", 36)
-        next_figure_text = font.render("NEXT FIGURE", True, BLACK, GRAY18)
+        next_figure_text = font.render("NEXT FIGURE", True, BLACK, DARK_SLATE_GREY)
         next_figure_text_rect = next_figure_text.get_rect()
         next_figure_text_rect.center = (
             self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
-            self.line_thickness + (self.square_size + self.line_thickness) * 6)
+            self.line_thickness + (self.square_size + self.line_thickness) * 5)
         screen.blit(next_figure_text, next_figure_text_rect)
         # next figure form
-        next_figure.i = 10
+        next_figure.i = 8
         next_figure.j = self.cols
         self.draw_figure(next_figure)
+
+        # Draw info lines
+        # Draw vertical lines
+        # left
+        pygame.draw.line(screen, GRAY18,
+                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 1),
+                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 21),
+                         self.line_thickness)
+        # right
+        pygame.draw.line(screen, GRAY18,
+                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 1),
+                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 21),
+                         self.line_thickness)
+
+        # upper 0
+        pygame.draw.line(screen, DARK_GREY,
+                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 1),
+                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 1), self.line_thickness)
+
+        # upper 1
+        pygame.draw.line(screen, DARK_GREY,
+                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 4),
+                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 4), self.line_thickness)
+
+        # upper 2
+        pygame.draw.line(screen, DARK_GREY,
+                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 11),
+                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 11), self.line_thickness)
+
+
+        # bottom
+        pygame.draw.line(screen, DARK_GREY,
+                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 21),
+                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
+                                 self.square_size + self.line_thickness) / 2,
+                          self.line_thickness + (self.square_size + self.line_thickness) * 21), self.line_thickness)
 
         # Draw the frame
         pygame.display.flip()
@@ -315,11 +377,11 @@ while not GAME_OVER:
             if event.key == RIGHT and figure.can_move_right():
                 figure.move(0, 1)
             if event.key == DOWN:
-                print(figure.i)
                 if figure.can_move_down():
                     figure.move(1, 0)
                 else:
                     figure.fix_at_board()
+                    board.full_row(figure.i + figure.f_height[1] - figure.f_height[2] - 1)
                     figure = next_figure
                     figure.spawn()
                     next_figure = Figure()
@@ -330,6 +392,7 @@ while not GAME_OVER:
                     figure.move(1, 0)
                 else:
                     figure.fix_at_board()
+                    board.full_row(figure.i + figure.f_height[1] - figure.f_height[2] - 1)
                     figure = next_figure
                     figure.spawn()
                     next_figure = Figure()
@@ -339,31 +402,25 @@ while not GAME_OVER:
     # figures moves
     # Движение фигуры вниз
     current_time = pygame.time.get_ticks()
-    if current_time - last_move_down_time >= MOVE_DOWN_DELAY:
-        if figure.can_move_down():
-            figure.move(1, 0)
-        else:
-            figure.fix_at_board()
-            figure = next_figure
-            figure.spawn()
-            next_figure = Figure()
+    delta_time = current_time - last_move_down_time
+    if delta_time >= MOVE_DOWN_DELAY and figure.can_move_down():  # if tick passed and figure can move down - move it down
+        figure.move(1, 0)
         last_move_down_time = current_time
-        print(figure.i)
-
-    # figures reach bottom
-    result = figure.can_move_down()
-    if not result:
-        print("can move down", result)
+    if delta_time >= MOVE_DOWN_DELAY * 2 and not figure.can_move_down():  # if two ticks passed and figure can't move down fix it to the board!
         figure.fix_at_board()
+        board.full_row(figure.i + figure.f_height[1] - figure.f_height[2] - 1)
         figure = next_figure
         figure.spawn()
         next_figure = Figure()
+        last_move_down_time = current_time
 
     # filling reach top
     if board.filled():
         GAME_OVER = True
 
-    board.full_row()
+    # win conditions
+    if board.score >= 10000:
+        GAME_OVER = True
 
     # frame draw
     board.draw(figure)
