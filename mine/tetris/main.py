@@ -184,12 +184,17 @@ class Board:
                         self.square_size,
                         self.square_size))
 
-    def full_row(self):
+    def full_row(self):  # finish it!
+        score_add = 0
         for i in range(-2, -(self.rows + 1), -1):
-            if sum(board.board[i]) == self.cols - 2:
-                board.board[-self.rows - 1: i] = board.board[-self.rows - 2: i - 1]
-                self.score += 1
-                break
+            for ii in range(4):  # longest figure
+                if all(board.board[i - ii]):
+                    score_add += 1
+                else:
+                    board.board[-self.rows + 1:i + 1] = board.board[-self.rows:i-ii]
+                    while len(board.board) < self.rows + 2:
+                        board.board.insert(0, [1] + [0] * (self.cols - 2) + [1])
+                    break
 
     def filled(self):
         return 1 in self.board[3][1:11]
@@ -255,8 +260,8 @@ class Board:
         next_figure_text = font.render("NEXT FIGURE", True, BLACK, GRAY18)
         next_figure_text_rect = next_figure_text.get_rect()
         next_figure_text_rect.center = (
-        self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
-        self.line_thickness + (self.square_size + self.line_thickness) * 6)
+            self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
+            self.line_thickness + (self.square_size + self.line_thickness) * 6)
         screen.blit(next_figure_text, next_figure_text_rect)
         # next figure form
         next_figure.i = 10
