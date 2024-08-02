@@ -31,65 +31,63 @@ class Menu():
         # last move down time
         self.last_move_down_time = pygame.time.get_ticks()
 
-        # highscores
-        # implement it with pickle to disable editing as text?
-        try:
-            with open("highscores.pkl", "rb") as file:
-                self.highscores = pickle.load(file)
-        except:
-            self.highscores = {}
+        # username
+        self.username = None
 
-    def draw_menu(self):
+    def draw_text(self, j, i, text="NO TEXT", font_size=64, text_color=(16, 16, 16), bg_color=(47, 79, 79), align="center", font="arial.ttf"):
+        font = pygame.font.SysFont(font, font_size)
+        text = font.render(text, True, text_color, bg_color)
+        text_rect = text.get_rect()
+        if align == "center":
+            text_rect.center = (j, i)
+        elif align == "topright":
+            text_rect.topright = (j, i)
+        elif align == "topleft":
+            text_rect.topleft = (j, i)
+        screen.blit(text, text_rect)
+
+    def draw_rect(self):
+        pass
+
+    def draw_line(self):
+        pass
+
+    def draw_menu(self):  # изменить считывание рекордов прямо из файла
         # Fill the background
         screen.fill(menu.DARK_SLATE_GREY)
 
         # menu text
         # start text
-        start_font = pygame.font.SysFont("arial.ttf", 64)
-        start_text = start_font.render("START", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        start_text_rect = start_text.get_rect()
-        start_text_rect.center = (
-            board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 4),
-            board.line_thickness + (board.square_size + board.line_thickness) * 8)
-        screen.blit(start_text, start_text_rect)
+        menu_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 4)
+        start_i = board.line_thickness + (board.square_size + board.line_thickness) * 8
+        self.draw_text(menu_j, start_i, "START")
 
         # options text
-        options_font = pygame.font.SysFont("arial.ttf", 64)
-        options_text = options_font.render("OPTIONS", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        options_text_rect = options_text.get_rect()
-        options_text_rect.center = (
-            board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 4),
-            board.line_thickness + (board.square_size + board.line_thickness) * 10)
-        screen.blit(options_text, options_text_rect)
+        options_i = board.line_thickness + (board.square_size + board.line_thickness) * 10
+        self.draw_text(menu_j, options_i, "OPTIONS")
 
         # exit text
-        exit_font = pygame.font.SysFont("arial.ttf", 64)
-        exit_text = exit_font.render("EXIT", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        exit_text_rect = exit_text.get_rect()
-        exit_text_rect.center = (
-            board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 4),
-            board.line_thickness + (board.square_size + board.line_thickness) * 12)
-        screen.blit(exit_text, exit_text_rect)
+        exit_i = board.line_thickness + (board.square_size + board.line_thickness) * 12
+        self.draw_text(menu_j, exit_i, "EXIT")
 
         # draw highscores text
-        highscores_font = pygame.font.SysFont("arial.ttf", 48)
-        highscores_text = highscores_font.render("HIGHSCORES:", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        highscores_text_rect = highscores_text.get_rect()
-        highscores_text_rect.topleft = (
-            board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 * 0.55),
-            board.line_thickness + (board.square_size + board.line_thickness) * 2)
-        screen.blit(highscores_text, highscores_text_rect)
+        highscores_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 * 0.55)
+        highscores_i = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        self.draw_text(highscores_j, highscores_i, "HIGHSCORES:", 48, align="topleft")
 
         # draw champs list
-        if self.highscores:
-            for place, champ in enumerate(self.highscores.items()):
-                champ_font = pygame.font.SysFont("arial.ttf", 32)
-                champs_text = champ_font.render(F"{place}. {champ[0]}: {champ[1]}", True, menu.BLACK, menu.DARK_SLATE_GREY)
-                champs_text_rect = champs_text.get_rect()
-                champs_text_rect.topleft = (
-                    board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 * 0.55),
-                    board.line_thickness + (board.square_size + board.line_thickness) * (3 + place))
-                screen.blit(champs_text, champs_text_rect)
+        with open(r"D:\python\first_projects\mine\tetris\highscores.pkl", "wb+") as file:
+            try:
+                champs_voc = pickle.load(file)
+            except:
+                champs_voc = None
+
+        if champs_voc:
+            for place, champ in enumerate(champs_voc.items()):
+                champ_j = board.line_thickness + (board.square_size + board.line_thickness) * (
+                            board.cols * 1.5 * 0.55)
+                champ_i = board.line_thickness + (board.square_size + board.line_thickness) * (3 + place)
+                self.draw_text(highscores_j, champ_i, F"{place}. {champ[0]}: {champ[1]}", 32, align="topleft")
         else:
             no_champ_font = pygame.font.SysFont("arial.ttf", 48)
             champs_text = no_champ_font.render(F"NO RECORDS", True, menu.BLACK, menu.DARK_SLATE_GREY)
@@ -140,6 +138,22 @@ class Menu():
 
         # Draw the frame
         pygame.display.flip()
+
+    def input_dialog_box(self):
+        pass
+
+    def store_record(self, name, record):
+        with open(r"D:\python\first_projects\mine\tetris\highscores.pkl", "wb+") as file:
+            try:
+                champs_voc = pickle.load(file)
+                champs_voc[name] = record
+                if len(champs_voc) < 10:
+                    champs_voc = {k: v for k,v in sorted(champs_voc, key=lambda x: x[1], reverse=True)}
+                    champs_voc.popitem()
+            except:
+                champs_voc = dict(name=record)
+            finally:
+                pickle.dump(champs_voc, file)
 
     def options_init(self):
         pass
