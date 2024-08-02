@@ -84,18 +84,12 @@ class Menu():
 
         if champs_voc:
             for place, champ in enumerate(champs_voc.items()):
-                champ_j = board.line_thickness + (board.square_size + board.line_thickness) * (
-                            board.cols * 1.5 * 0.55)
                 champ_i = board.line_thickness + (board.square_size + board.line_thickness) * (3 + place)
                 self.draw_text(highscores_j, champ_i, F"{place}. {champ[0]}: {champ[1]}", 32, align="topleft")
         else:
-            no_champ_font = pygame.font.SysFont("arial.ttf", 48)
-            champs_text = no_champ_font.render(F"NO RECORDS", True, menu.BLACK, menu.DARK_SLATE_GREY)
-            champs_text_rect = champs_text.get_rect()
-            champs_text_rect.topleft = (
-                board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 * 0.55),
-                board.line_thickness + (board.square_size + board.line_thickness) * 4)
-            screen.blit(champs_text, champs_text_rect)
+            no_rec = board.line_thickness + (board.square_size + board.line_thickness) * 4
+            self.draw_text(highscores_j, no_rec, "NO RECORDS", 48, align="topleft")
+
 
         # Draw info lines
         # Draw vertical lines
