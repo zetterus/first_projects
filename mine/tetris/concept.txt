@@ -1,3 +1,5 @@
-1 Figure class to handy manipulation with coords
-2 board? just background? let it be an array with done figures (ones that alrdy reach bottom)
-2.1 scoreboard, part of board, contains next figure, points, level?, speed?
+полноценное меню: подсветка активного пункта, выбор его с помощью Enter
+
+в опциях: выбор цветов, и настойка горячих клавиш
+
+сохранение рейтинга в файл модулем pickle
