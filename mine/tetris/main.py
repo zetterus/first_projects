@@ -4,7 +4,7 @@ import pickle
 
 
 # starting screen including "start", "options", "records", "exit"
-class Menu():
+class Menu:
     def __init__(self):
         # game over condition
         self.GAME_OVER = False
@@ -32,9 +32,10 @@ class Menu():
         self.last_move_down_time = pygame.time.get_ticks()
 
         # username
-        self.username = None
+        self.username = "NO NAME"
 
-    def draw_text(self, j, i, text="NO TEXT", font_size=64, text_color=(16, 16, 16), bg_color=(47, 79, 79), align="center", font="arial.ttf"):
+    def draw_text(self, j, i, text="NO TEXT", font_size=64, text_color=(16, 16, 16), bg_color=(47, 79, 79),
+                  align="center", font="arial.ttf"):
         font = pygame.font.SysFont(font, font_size)
         text = font.render(text, True, text_color, bg_color)
         text_rect = text.get_rect()
@@ -46,11 +47,8 @@ class Menu():
             text_rect.topleft = (j, i)
         screen.blit(text, text_rect)
 
-    def draw_rect(self):
-        pass
-
-    def draw_line(self):
-        pass
+    def draw_line(self, start, end, width=2, color=(32, 32, 32)):
+        pygame.draw.line(screen, color, start, end, width)
 
     def draw_menu(self):  # изменить считывание рекордов прямо из файла
         # Fill the background
@@ -90,45 +88,31 @@ class Menu():
             no_rec = board.line_thickness + (board.square_size + board.line_thickness) * 4
             self.draw_text(highscores_j, no_rec, "NO RECORDS", 48, align="topleft")
 
-
         # Draw info lines
         # Draw vertical lines
         # left
-        pygame.draw.line(screen, menu.GRAY18,
-                         (board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2) - (
-                                 board.square_size + board.line_thickness) / 2,
-                          board.line_thickness + (board.square_size + board.line_thickness) * 1),
-                         (board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2) - (
-                                 board.square_size + board.line_thickness) / 2,
-                          board.line_thickness + (board.square_size + board.line_thickness) * 21),
-                         board.line_thickness)
-        # right
-        pygame.draw.line(screen, menu.GRAY18,
-                         (board.line_thickness + (board.square_size + board.line_thickness) * (board.cols + 5) - (
-                                 board.square_size + board.line_thickness) / 2,
-                          board.line_thickness + (board.square_size + board.line_thickness) * 1),
-                         (board.line_thickness + (board.square_size + board.line_thickness) * (board.cols + 5) - (
-                                 board.square_size + board.line_thickness) / 2,
-                          board.line_thickness + (board.square_size + board.line_thickness) * 21),
-                         board.line_thickness)
+        start_left_line_j = board.line_thickness + (board.square_size + board.line_thickness) * (
+                board.cols * 1.5 / 2) - (board.square_size + board.line_thickness) / 2
+        start_left_line_i = board.line_thickness + (board.square_size + board.line_thickness) * 1
+        end_left_line_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2) - (
+                board.square_size + board.line_thickness) / 2
+        end_left_line_i = board.line_thickness + (board.square_size + board.line_thickness) * 21
+        self.draw_line((start_left_line_j, start_left_line_i), (end_left_line_j, end_left_line_i))
 
-        # upper 0
-        pygame.draw.line(screen, menu.DARK_GREY,
-                         (board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2) - (
-                                 board.square_size + board.line_thickness) / 2,
-                          board.line_thickness + (board.square_size + board.line_thickness) * 1),
-                         (board.line_thickness + (board.square_size + board.line_thickness) * (board.cols + 5) - (
-                                 board.square_size + board.line_thickness) / 2,
-                          board.line_thickness + (board.square_size + board.line_thickness) * 1), board.line_thickness)
+        # right
+        start_right_line_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols + 5) - (
+                board.square_size + board.line_thickness) / 2
+        start_right_line_i = board.line_thickness + (board.square_size + board.line_thickness) * 1
+        end_right_line_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols + 5) - (
+                board.square_size + board.line_thickness) / 2
+        end_right_line_i = board.line_thickness + (board.square_size + board.line_thickness) * 21
+        self.draw_line((start_right_line_j, start_right_line_i), (end_right_line_j, end_right_line_i))
+
+        # upper
+        self.draw_line((start_left_line_j, start_left_line_i), (start_right_line_j, start_right_line_i))
 
         # bottom
-        pygame.draw.line(screen, menu.DARK_GREY,
-                         (board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2) - (
-                                 board.square_size + board.line_thickness) / 2,
-                          board.line_thickness + (board.square_size + board.line_thickness) * 21),
-                         (board.line_thickness + (board.square_size + board.line_thickness) * (board.cols + 5) - (
-                                 board.square_size + board.line_thickness) / 2,
-                          board.line_thickness + (board.square_size + board.line_thickness) * 21), board.line_thickness)
+        self.draw_line((end_left_line_j, end_left_line_i), (end_right_line_j, end_right_line_i))
 
         # Draw the frame
         pygame.display.flip()
@@ -142,15 +126,48 @@ class Menu():
                 champs_voc = pickle.load(file)
                 champs_voc[name] = record
                 if len(champs_voc) < 10:
-                    champs_voc = {k: v for k,v in sorted(champs_voc, key=lambda x: x[1], reverse=True)}
+                    champs_voc = {k: v for k, v in sorted(champs_voc, key=lambda x: x[1], reverse=True)}
                     champs_voc.popitem()
             except:
                 champs_voc = dict(name=record)
             finally:
                 pickle.dump(champs_voc, file)
 
-    def options_init(self):
-        pass
+    def options_draw(self):
+        # Fill the background
+        screen.fill(menu.DARK_SLATE_GREY)
+
+        # options text
+        options_text_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2)
+        options_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        self.draw_text(options_text_j, options_text_i, "OPTIONS")
+
+        # hint text
+        hint_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2)
+        hint_i = board.line_thickness + (board.square_size + board.line_thickness) * 20
+        self.draw_text(hint_j, hint_i, "press first letter to choose option", font_size=24)
+
+        # Draw info lines
+        # Draw vertical lines
+        # left
+        left_j = board.square_size + board.line_thickness
+        right_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols + 5) - (
+                board.square_size + board.line_thickness) / 2
+        top_i = board.line_thickness * 2 + board.square_size
+        bottom_i = board.line_thickness + (board.square_size + board.line_thickness) * 21
+        self.draw_line((left_j, top_i), (left_j, bottom_i))
+
+        # right
+        self.draw_line((right_j, top_i), (right_j, bottom_i))
+
+        # upper
+        self.draw_line((left_j, top_i), (right_j, top_i))
+
+        # bottom
+        self.draw_line((left_j, bottom_i), (right_j, bottom_i))
+
+        # Draw the frame
+        pygame.display.flip()
 
 
 # figure class
@@ -302,15 +319,21 @@ class Board:
                            11: 175, 12: 100}
         self.paused = False
 
+    def draw_rect(self, j=0, i=0, width=None, height=None,
+                  color=(0, 100, 255)):  # Rectangle (startx, starty, width, height)
+        if width is None:
+            width = self.square_size
+        if height is None:
+            height = self.square_size
+        pygame.draw.rect(screen, color, (j, i, width, height))
+
     def draw_figure(self, fig):
-        for i in range(fig.f_height[1]):
-            for j in range(fig.f_width[1]):  # Rectangle (startx, starty, width, heigth)
-                if fig.form[i][j]:
-                    pygame.draw.rect(screen, menu.BLUE, (
-                        (fig.j + j) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        (fig.i + i - 2) * (self.square_size + self.line_thickness) + self.line_thickness,
-                        self.square_size,
-                        self.square_size))
+        for ii in range(fig.f_height[1]):
+            for jj in range(fig.f_width[1]):
+                if fig.form[ii][jj]:
+                    start_j = (fig.j + jj) * (self.square_size + self.line_thickness) + self.line_thickness
+                    start_i = (fig.i + ii - 2) * (self.square_size + self.line_thickness) + self.line_thickness
+                    self.draw_rect(start_j, start_i)
 
     def full_row(self, last_row):  # finish it!
         score_add = 0
@@ -331,162 +354,119 @@ class Board:
         screen.fill(menu.GRAY18)
         # Draw vertical lines
         for j in range(0, self.width, self.square_size + self.line_thickness):
-            pygame.draw.line(screen, menu.DARK_GREY, (j, 0), (j, self.height), self.line_thickness)
+            pygame.draw.line(screen, menu.BLACK, (j, 0), (j, self.height), self.line_thickness)
         # Draw horizontal lines
         for i in range(0, self.height, self.square_size + self.line_thickness):
-            pygame.draw.line(screen, menu.DARK_GREY, (0, i), (self.width, i), self.line_thickness)
+            pygame.draw.line(screen, menu.BLACK, (0, i), (self.width, i), self.line_thickness)
 
         # Draw figure
-        self.draw_figure(figure)
+        self.draw_figure(fig)
 
         # Draw filled board part
-        for i in range(board.rows):
-            for j in range(board.cols):
-                if board.board[i + 2][j]:
-                    pygame.draw.rect(screen, menu.BLUE, (
-                        j * (self.square_size + self.line_thickness) + self.line_thickness,
-                        i * (self.square_size + self.line_thickness) + self.line_thickness,
-                        self.square_size,
-                        self.square_size))
+        for ii in range(board.rows):
+            for jj in range(board.cols):
+                if board.board[ii + 2][jj]:
+                    start_j = jj * (self.square_size + self.line_thickness) + self.line_thickness
+                    start_i = ii * (self.square_size + self.line_thickness) + self.line_thickness
+                    self.draw_rect(start_j, start_i)
 
         # Draw board borders
         # left border
-        pygame.draw.rect(screen, menu.DARK_SLATE_GREY,
-                         (0, 0, self.square_size + self.line_thickness,
-                          self.height))  # Rectangle (startx, starty, width, heigth)
+        left_border_j = 0
+        left_border_i = 0
+        left_border_width = self.square_size + self.line_thickness
+        border_height = self.height
+        self.draw_rect(left_border_j, left_border_i, color=menu.DARK_SLATE_GREY, width=left_border_width,
+                       height=border_height)
+
         # right border
-        pygame.draw.rect(screen, menu.DARK_SLATE_GREY,
-                         (
-                             self.width - self.square_size - self.line_thickness, 0,
-                             (self.square_size + self.line_thickness) * self.cols // 2,
-                             self.height))
+        right_border_j = self.width - self.square_size - self.line_thickness
+        right_border_i = 0
+        right_border_width = (self.square_size + self.line_thickness) * self.cols // 2
+        self.draw_rect(right_border_j, right_border_i, color=menu.DARK_SLATE_GREY, width=right_border_width,
+                       height=border_height)
+
         # upper border
-        pygame.draw.rect(screen, menu.DARK_SLATE_GREY, (0, 0, self.width, self.square_size + self.line_thickness))
+        hor_border_height = self.square_size + self.line_thickness
+        self.draw_rect(left_border_j, left_border_j, color=menu.DARK_SLATE_GREY, width=self.width,
+                       height=hor_border_height)
+
         # bottom border
-        pygame.draw.rect(screen, menu.DARK_SLATE_GREY,
-                         (0, self.height - self.square_size - self.line_thickness, self.width,
-                          self.square_size + self.line_thickness))
+        bottom_border_j = self.height - self.square_size - self.line_thickness
+        self.draw_rect(left_border_j, bottom_border_j, color=menu.DARK_SLATE_GREY, width=self.width,
+                       height=hor_border_height)
 
         # Draw info
         # score text
-        score_font = pygame.font.SysFont("arial.ttf", 48)
-        score_text = score_font.render("SCORE:", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        score_text_rect = score_text.get_rect()
-        score_text_rect.center = (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
-                                  self.line_thickness + (self.square_size + self.line_thickness) * 2)
-        screen.blit(score_text, score_text_rect)
+        score_text_j = self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2)
+        score_text_i = self.line_thickness + (self.square_size + self.line_thickness) * 2
+        menu.draw_text(score_text_j, score_text_i, "SCORE", font_size=48, text_color=menu.BLACK,
+                       bg_color=menu.DARK_SLATE_GREY)
 
         # score int
-        score_font = pygame.font.SysFont("arial.ttf", 48)
-        score_int = score_font.render(f"{self.score}", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        score_int_rect = score_int.get_rect()
-        score_int_rect.topright = (
-            self.line_thickness * 2 + (self.square_size + self.line_thickness) * (self.cols + 3.5),
-            self.line_thickness + (self.square_size + self.line_thickness) * 2.7)
-        screen.blit(score_int, score_int_rect)
+        score_j = self.line_thickness * 2 + (self.square_size + self.line_thickness) * (self.cols + 3.5)
+        score_i = self.line_thickness + (self.square_size + self.line_thickness) * 2.7
+        menu.draw_text(score_j, score_i, f"{self.score}", font_size=48, text_color=menu.BLACK,
+                       bg_color=menu.DARK_SLATE_GREY, align="topright")
 
         # next figure text
-        score_font = pygame.font.SysFont("arial.ttf", 36)
-        next_figure_text = score_font.render("NEXT FIGURE", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        next_figure_text_rect = next_figure_text.get_rect()
-        next_figure_text_rect.center = (
-            self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
-            self.line_thickness + (self.square_size + self.line_thickness) * 5)
-        screen.blit(next_figure_text, next_figure_text_rect)
+        next_figure_text_j = self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2)
+        next_figure_text_i = self.line_thickness + (self.square_size + self.line_thickness) * 5
+        menu.draw_text(next_figure_text_j, next_figure_text_i, "NEXT FIGURE", font_size=36, text_color=menu.BLACK,
+                       bg_color=menu.DARK_SLATE_GREY)
 
         # next figure form
         next_figure.i = 8
         next_figure.j = self.cols
         self.draw_figure(next_figure)
 
-        # score text
-        score_text_font = pygame.font.SysFont("arial.ttf", 36)
-        score_text = score_text_font.render("DIFFICULTY:", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        score_text_rect = score_text.get_rect()
-        score_text_rect.center = (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2),
-                                  self.line_thickness + (self.square_size + self.line_thickness) * 12)
-        screen.blit(score_text, score_text_rect)
+        # difficulty text
+        diff_text_j = self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 2)
+        diff_text_i = self.line_thickness + (self.square_size + self.line_thickness) * 12
+        menu.draw_text(diff_text_j, diff_text_i, "DIFFICULTY:", font_size=36, text_color=menu.BLACK,
+                       bg_color=menu.DARK_SLATE_GREY)
 
-        # score int
-        score_int_font = pygame.font.SysFont("arial.ttf", 48)
-        score_int = score_int_font.render(f"{self.score // 100}", True, menu.BLACK, menu.DARK_SLATE_GREY)
-        score_int_rect = score_int.get_rect()
-        score_int_rect.topright = (
-            self.line_thickness * 2 + (self.square_size + self.line_thickness) * (self.cols + 3.5),
-            self.line_thickness + (self.square_size + self.line_thickness) * 12.7)
-        screen.blit(score_int, score_int_rect)
+        # difficulty int
+        diff_text_j = self.line_thickness * 2 + (self.square_size + self.line_thickness) * (self.cols + 3.5)
+        diff_text_i = self.line_thickness + (self.square_size + self.line_thickness) * 12.7
+        menu.draw_text(diff_text_j, diff_text_i, f"{self.score // 100}", font_size=48, text_color=menu.BLACK,
+                       bg_color=menu.DARK_SLATE_GREY, align="topright")
 
         # Draw info lines
         # Draw vertical lines
         # left
-        pygame.draw.line(screen, menu.GRAY18,
-                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 1),
-                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 21),
-                         self.line_thickness)
+        left_v_j = self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
+                self.square_size + self.line_thickness) / 2
+        top_v_i = self.line_thickness + (self.square_size + self.line_thickness) * 1
+        bot_v_i = self.line_thickness + (self.square_size + self.line_thickness) * 21
+        menu.draw_line((left_v_j, top_v_i), (left_v_j, bot_v_i))
+
         # right
-        pygame.draw.line(screen, menu.GRAY18,
-                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 1),
-                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 21),
-                         self.line_thickness)
+        right_v_j = self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
+                self.square_size + self.line_thickness) / 2
+        menu.draw_line((right_v_j, top_v_i), (right_v_j, bot_v_i))
 
-        # upper 0
-        pygame.draw.line(screen, menu.DARK_GREY,
-                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 1),
-                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 1), self.line_thickness)
+        # Draw horizontal lines
+        # top
+        menu.draw_line((left_v_j, top_v_i), (right_v_j, top_v_i))
 
-        # upper 1
-        pygame.draw.line(screen, menu.DARK_GREY,
-                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 4),
-                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 4), self.line_thickness)
+        # horizontal 1
+        v_1_i = self.line_thickness + (self.square_size + self.line_thickness) * 4
+        menu.draw_line((left_v_j, v_1_i), (right_v_j, v_1_i))
 
-        # upper 2
-        pygame.draw.line(screen, menu.DARK_GREY,
-                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 11),
-                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 11), self.line_thickness)
+        # horizontal 2
+        v_2_i = self.line_thickness + (self.square_size + self.line_thickness) * 11
+        menu.draw_line((left_v_j, v_2_i), (right_v_j, v_2_i))
 
-        # upper 3
-        pygame.draw.line(screen, menu.DARK_GREY,
-                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 14),
-                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 14), self.line_thickness)
+        # horizontal 3
+        v_3_i = self.line_thickness + (self.square_size + self.line_thickness) * 14
+        menu.draw_line((left_v_j, v_3_i), (right_v_j, v_3_i))
 
         # bottom
-        pygame.draw.line(screen, menu.DARK_GREY,
-                         (self.line_thickness + (self.square_size + self.line_thickness) * self.cols - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 21),
-                         (self.line_thickness + (self.square_size + self.line_thickness) * (self.cols + 5) - (
-                                 self.square_size + self.line_thickness) / 2,
-                          self.line_thickness + (self.square_size + self.line_thickness) * 21), self.line_thickness)
+        menu.draw_line((left_v_j, bot_v_i), (right_v_j, bot_v_i))
 
         # Draw the frame
         pygame.display.flip()
-
-    # def GAME_START(self):
-    #     pass
 
 
 # initializing objects
@@ -508,6 +488,7 @@ icon = pygame.image.load("tetris.png")
 pygame.display.set_icon(icon)
 
 running = True
+options_running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -515,7 +496,7 @@ while running:
 
         menu.draw_menu()
 
-        # Проверка нажатия клавиши
+        # checking keypress
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
 
@@ -528,6 +509,7 @@ while running:
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             menu.GAME_OVER = True
+                            running = False
 
                         # keyboard controls
                         if event.type == pygame.KEYDOWN:
@@ -555,13 +537,15 @@ while running:
                                     figure = next_figure
                                     figure.spawn()
                                     next_figure = Figure()
-                            if event.key == menu.EXIT:
+                            if event.key == menu.EXIT or event.key == pygame.K_ESCAPE:
+                                menu.store_record(menu.username, board.score)
                                 menu.GAME_OVER = True
+                                running = False
                             if event.key == pygame.K_i:
                                 print(figure.i, figure.j)
 
                     # figures moves
-                    # Движение фигуры вниз
+                    # figure moves down
                     current_time = pygame.time.get_ticks()
                     delta_time = current_time - menu.last_move_down_time
                     if delta_time >= menu.MOVE_DOWN_DELAY and figure.can_move_down():  # if tick passed and figure can move down - move it down
@@ -580,34 +564,32 @@ while running:
                     if diff in board.difficulty:
                         menu.MOVE_DOWN_DELAY = board.difficulty[diff]
 
-                    # filling reach top
+                    # loose condition (filling reach top)
                     if board.filled():
+                        menu.store_record(menu.username, board.score)
                         menu.GAME_OVER = True
 
-                    # win conditions
+                    # win condition
                     if board.score >= 10000:
+                        menu.store_record(menu.username, board.score)
                         waiting_for_input = True
                     else:
                         waiting_for_input = False
 
                     while waiting_for_input:
                         # YOU WON TEXT
-                        won_font = pygame.font.SysFont("arial.ttf", 48)
-                        win_text = won_font.render("YOU WON", True, menu.BLACK, menu.DARK_SLATE_GREY)
-                        win_text_rect = win_text.get_rect()
-                        win_text_rect.center = (
-                        board.line_thickness + (board.square_size + board.line_thickness) * (board.cols / 2),
-                        board.line_thickness + (board.square_size + board.line_thickness) * 8)
-                        screen.blit(win_text, win_text_rect)
+                        you_won_text_j = board.line_thickness + (board.square_size + board.line_thickness) * (
+                                board.cols / 2)
+                        you_won_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 8
+                        menu.draw_text(you_won_text_j, you_won_text_i, "YOU WON", font_size=48,
+                                       bg_color=menu.DARK_SLATE_GREY, text_color=menu.BLACK)
 
                         # RETRY TEXT
-                        retry_font = pygame.font.SysFont("arial.ttf", 48)
-                        win_text = retry_font.render("RETRY? Y\\N", True, menu.BLACK, menu.DARK_SLATE_GREY)
-                        win_text_rect = win_text.get_rect()
-                        win_text_rect.center = (
-                        board.line_thickness + (board.square_size + board.line_thickness) * (board.cols / 2),
-                        board.line_thickness + (board.square_size + board.line_thickness) * 10)
-                        screen.blit(win_text, win_text_rect)
+                        retry_text_j = board.line_thickness + (board.square_size + board.line_thickness) * (
+                                board.cols / 2)
+                        retry_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 10
+                        menu.draw_text(retry_text_j, retry_text_i, "RETRY? Y\\N", font_size=48,
+                                       bg_color=menu.DARK_SLATE_GREY, text_color=menu.BLACK)
 
                         # detect choice
                         for event in pygame.event.get():
@@ -628,11 +610,20 @@ while running:
                     # frame draw
                     board.draw_board(figure)
 
-
             elif event.key == pygame.K_o:
-                print("o")
-                # menu.options_init()
-            elif event.key == pygame.K_e:
+                options_running = True
+                while options_running:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            options_running = False
+                            running = False
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_ESCAPE:
+                                options_running = False
+
+                    menu.options_draw()
+
+            elif event.key == pygame.K_e or event.key == pygame.K_ESCAPE:
                 running = False
 
 # Quit pygame
