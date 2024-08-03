@@ -15,6 +15,7 @@ class Menu:
         self.LEFT = pygame.K_LEFT
         self.DROP = pygame.K_SPACE
         self.EXIT = pygame.K_ESCAPE
+        self.key_to_change = None
 
         # Define colors
         self.WHITE = (255, 255, 255)
@@ -125,7 +126,7 @@ class Menu:
             try:
                 champs_voc = pickle.load(file)
                 champs_voc[name] = record
-                if len(champs_voc) < 10:
+                if len(champs_voc) > 10:
                     champs_voc = {k: v for k, v in sorted(champs_voc, key=lambda x: x[1], reverse=True)}
                     champs_voc.popitem()
             except:
@@ -139,13 +140,68 @@ class Menu:
 
         # options text
         options_text_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2)
-        options_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 2
-        self.draw_text(options_text_j, options_text_i, "OPTIONS")
+        options_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 3
+        self.draw_text(options_text_j, options_text_i, "OPTIONS", font_size=96)
+
+        # rotate text
+        rotate_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        rotate_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 5
+        self.draw_text(rotate_text_j, rotate_text_i, "ROTATE KEY", align="topleft")
+
+        # rotate value
+        rotate_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
+        rotate_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 5
+        self.draw_text(rotate_value_j, rotate_value_i,
+                       f"{pygame.key.name(self.ROTATE).upper() if self.ROTATE else '-'}", align="topleft")
+
+        # down text
+        down_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        down_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 7
+        self.draw_text(down_text_j, down_text_i, "DOWN KEY", align="topleft")
+
+        # down value
+        down_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
+        down_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 7
+        self.draw_text(down_value_j, down_value_i, f"{pygame.key.name(self.DOWN).upper() if self.DOWN else '-'}",
+                       align="topleft")
+
+        # right text
+        right_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        right_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 9
+        self.draw_text(right_text_j, right_text_i, "RIGHT KEY", align="topleft")
+
+        # right value
+        right_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
+        right_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 9
+        self.draw_text(right_value_j, right_value_i, f"{pygame.key.name(self.RIGHT).upper() if self.RIGHT else '-'}",
+                       align="topleft")
+
+        # left text
+        left_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        left_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 11
+        self.draw_text(left_text_j, left_text_i, "LEFT KEY", align="topleft")
+
+        # left value
+        left_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
+        left_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 11
+        self.draw_text(left_value_j, left_value_i, f"{pygame.key.name(self.LEFT).upper() if self.LEFT else '-'}",
+                       align="topleft")
+
+        # drop text
+        drop_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        drop_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 13
+        self.draw_text(drop_text_j, drop_text_i, "DROP KEY", align="topleft")
+
+        # drop value
+        drop_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
+        drop_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 13
+        self.draw_text(drop_value_j, drop_value_i, f"{pygame.key.name(self.DROP).upper() if self.DROP else '-'}",
+                       align="topleft")
 
         # hint text
         hint_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2)
         hint_i = board.line_thickness + (board.square_size + board.line_thickness) * 20
-        self.draw_text(hint_j, hint_i, "press first letter to choose option", font_size=24)
+        self.draw_text(hint_j, hint_i, "press the button to change keybind", font_size=36)
 
         # Draw info lines
         # Draw vertical lines
@@ -168,6 +224,32 @@ class Menu:
 
         # Draw the frame
         pygame.display.flip()
+
+    def set_key(self, key_name):
+        if key_name == 'rotate':
+            self.key_to_change = 'rotate'
+        elif key_name == 'down':
+            self.key_to_change = 'down'
+        elif key_name == 'right':
+            self.key_to_change = 'right'
+        elif key_name == 'left':
+            self.key_to_change = 'left'
+        elif key_name == 'drop':
+            self.key_to_change = 'drop'
+
+    def change_key(self, event_key):
+        if self.key_to_change:
+            if self.key_to_change == 'rotate':
+                self.ROTATE = event_key
+            elif self.key_to_change == 'down':
+                self.DOWN = event_key
+            elif self.key_to_change == 'right':
+                self.RIGHT = event_key
+            elif self.key_to_change == 'left':
+                self.LEFT = event_key
+            elif self.key_to_change == 'drop':
+                self.DROP = event_key
+            self.key_to_change = None
 
 
 # figure class
@@ -314,7 +396,7 @@ class Board:
         self.line_thickness = line_thickness
         self.width = self.cols * (self.square_size + self.line_thickness) + self.line_thickness
         self.height = self.rows * (self.square_size + self.line_thickness) + self.line_thickness
-        self.score = 9999
+        self.score = 0
         self.difficulty = {0: 1000, 1: 925, 2: 850, 3: 775, 4: 700, 5: 625, 6: 550, 7: 475, 8: 400, 9: 325, 10: 250,
                            11: 175, 12: 100}
         self.paused = False
@@ -537,12 +619,12 @@ while running:
                                     figure = next_figure
                                     figure.spawn()
                                     next_figure = Figure()
-                            if event.key == menu.EXIT or event.key == pygame.K_ESCAPE:
+                            if event.key == menu.EXIT or event.key == menu.EXIT:
                                 menu.store_record(menu.username, board.score)
                                 menu.GAME_OVER = True
                                 running = False
-                            if event.key == pygame.K_i:
-                                print(figure.i, figure.j)
+                            # if event.key == pygame.K_i:
+                            #     print(figure.i, figure.j)
 
                     # figures moves
                     # figure moves down
@@ -618,12 +700,29 @@ while running:
                             options_running = False
                             running = False
                         if event.type == pygame.KEYDOWN:
-                            if event.key == pygame.K_ESCAPE:
+                            if event.key == menu.EXIT:
                                 options_running = False
+                            if event.key == menu.ROTATE:
+                                menu.set_key('rotate')
+                                menu.ROTATE = None
+                            elif event.key == menu.DOWN:
+                                menu.set_key('down')
+                                menu.DOWN = None
+                            elif event.key == menu.RIGHT:
+                                menu.set_key('right')
+                                menu.RIGHT = None
+                            elif event.key == menu.LEFT:
+                                menu.set_key('left')
+                                menu.LEFT = None
+                            elif event.key == menu.DROP:
+                                menu.set_key('drop')
+                                menu.DROP = None
+                            else:
+                                menu.change_key(event.key)
 
                     menu.options_draw()
 
-            elif event.key == pygame.K_e or event.key == pygame.K_ESCAPE:
+            elif event.key == pygame.K_e or event.key == menu.EXIT:
                 running = False
 
 # Quit pygame

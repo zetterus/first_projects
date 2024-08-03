@@ -18,7 +18,7 @@ while running:
         # Проверка нажатия клавиши
         if event.type == pygame.KEYDOWN:
             key_name = pygame.key.name(event.key)  # Получаем имя нажатой клавиши
-            print(f"Нажата клавиша: {key_name}, pygame.K_{key_name.upper()}")  # Выводим название и код клавиши
+            print(f"Нажата клавиша: {key_name}, pygame.K_{key_name}")  # Выводим название и код клавиши
 
     # Очистка экрана
     screen.fill((0, 0, 0))  # Черный фон
