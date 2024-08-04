@@ -33,7 +33,7 @@ class Menu:
         self.last_move_down_time = pygame.time.get_ticks()
 
         # username
-        self.username = "NO NAME"
+        self.username = "NONAME"
 
     def draw_text(self, j, i, text="NO TEXT", font_size=64, text_color=(16, 16, 16), bg_color=(47, 79, 79),
                   align="center", font="arial.ttf"):
@@ -71,21 +71,17 @@ class Menu:
 
         # draw highscores text
         highscores_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 * 0.55)
-        highscores_i = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        highscores_i = board.line_thickness + (board.square_size + board.line_thickness) * 1.75
         self.draw_text(highscores_j, highscores_i, "HIGHSCORES:", 48, align="topleft")
 
         # draw champs list
-        with open(r"D:\python\first_projects\mine\tetris\highscores.pkl", "wb+") as file:
-            try:
+        try:
+            with open(r"D:\python\first_projects\mine\tetris\highscores.pkl", "rb") as file:
                 champs_voc = pickle.load(file)
-            except:
-                champs_voc = None
-
-        if champs_voc:
-            for place, champ in enumerate(champs_voc.items()):
-                champ_i = board.line_thickness + (board.square_size + board.line_thickness) * (3 + place)
-                self.draw_text(highscores_j, champ_i, F"{place}. {champ[0]}: {champ[1]}", 32, align="topleft")
-        else:
+                for place, champ in enumerate(champs_voc.items(), 1):
+                    champ_i = board.line_thickness + (board.square_size + board.line_thickness) * (2 + place)
+                    self.draw_text(highscores_j, champ_i, F"{place}. {champ[0]}: {champ[1]}", 32, align="topleft")
+        except:
             no_rec = board.line_thickness + (board.square_size + board.line_thickness) * 4
             self.draw_text(highscores_j, no_rec, "NO RECORDS", 48, align="topleft")
 
@@ -121,17 +117,21 @@ class Menu:
     def input_dialog_box(self):
         pass
 
-    def store_record(self, name, record):
-        with open(r"D:\python\first_projects\mine\tetris\highscores.pkl", "wb+") as file:
-            try:
+    def store_record(self):
+        try:
+            with open(r"D:\python\first_projects\mine\tetris\highscores.pkl", "rb") as file:
+                print("try")
                 champs_voc = pickle.load(file)
-                champs_voc[name] = record
+                champs_voc[menu.username] = board.score
+                champs_voc = {k: v for k, v in sorted(champs_voc.items(), key=lambda x: x[1], reverse=True)}
                 if len(champs_voc) > 10:
-                    champs_voc = {k: v for k, v in sorted(champs_voc, key=lambda x: x[1], reverse=True)}
                     champs_voc.popitem()
-            except:
-                champs_voc = dict(name=record)
-            finally:
+        except:
+            print("except")
+            champs_voc = {menu.username: board.score}
+        finally:
+            with open(r"D:\python\first_projects\mine\tetris\highscores.pkl", "wb") as file:
+                print("finally")
                 pickle.dump(champs_voc, file)
 
     def options_draw(self):
@@ -144,64 +144,69 @@ class Menu:
         self.draw_text(options_text_j, options_text_i, "OPTIONS", font_size=96)
 
         # rotate text
-        rotate_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
+        left_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
         rotate_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 5
-        self.draw_text(rotate_text_j, rotate_text_i, "ROTATE KEY", align="topleft")
+        self.draw_text(left_j, rotate_text_i, "ROTATE KEY", align="topleft")
 
         # rotate value
-        rotate_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
+        right_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
         rotate_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 5
-        self.draw_text(rotate_value_j, rotate_value_i,
+        self.draw_text(right_j, rotate_value_i,
                        f"{pygame.key.name(self.ROTATE).upper() if self.ROTATE else '-'}", align="topleft")
 
         # down text
-        down_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
         down_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 7
-        self.draw_text(down_text_j, down_text_i, "DOWN KEY", align="topleft")
+        self.draw_text(left_j, down_text_i, "DOWN KEY", align="topleft")
 
         # down value
-        down_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
         down_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 7
-        self.draw_text(down_value_j, down_value_i, f"{pygame.key.name(self.DOWN).upper() if self.DOWN else '-'}",
+        self.draw_text(right_j, down_value_i, f"{pygame.key.name(self.DOWN).upper() if self.DOWN else '-'}",
                        align="topleft")
 
         # right text
-        right_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
         right_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 9
-        self.draw_text(right_text_j, right_text_i, "RIGHT KEY", align="topleft")
+        self.draw_text(left_j, right_text_i, "RIGHT KEY", align="topleft")
 
         # right value
-        right_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
         right_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 9
-        self.draw_text(right_value_j, right_value_i, f"{pygame.key.name(self.RIGHT).upper() if self.RIGHT else '-'}",
+        self.draw_text(right_j, right_value_i, f"{pygame.key.name(self.RIGHT).upper() if self.RIGHT else '-'}",
                        align="topleft")
 
         # left text
-        left_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
         left_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 11
-        self.draw_text(left_text_j, left_text_i, "LEFT KEY", align="topleft")
+        self.draw_text(left_j, left_text_i, "LEFT KEY", align="topleft")
 
         # left value
-        left_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
         left_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 11
-        self.draw_text(left_value_j, left_value_i, f"{pygame.key.name(self.LEFT).upper() if self.LEFT else '-'}",
+        self.draw_text(right_j, left_value_i, f"{pygame.key.name(self.LEFT).upper() if self.LEFT else '-'}",
                        align="topleft")
 
         # drop text
-        drop_text_j = board.line_thickness + (board.square_size + board.line_thickness) * 2
         drop_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 13
-        self.draw_text(drop_text_j, drop_text_i, "DROP KEY", align="topleft")
+        self.draw_text(left_j, drop_text_i, "DROP KEY", align="topleft")
 
         # drop value
-        drop_value_j = board.line_thickness + (board.square_size + board.line_thickness) * 11
         drop_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 13
-        self.draw_text(drop_value_j, drop_value_i, f"{pygame.key.name(self.DROP).upper() if self.DROP else '-'}",
+        self.draw_text(right_j, drop_value_i, f"{pygame.key.name(self.DROP).upper() if self.DROP else '-'}",
                        align="topleft")
 
-        # hint text
+        # name text
+        name_text_i = board.line_thickness + (board.square_size + board.line_thickness) * 15
+        self.draw_text(left_j, name_text_i, "YOUR NAME", align="topleft")
+
+        # name value
+        name_value_i = board.line_thickness + (board.square_size + board.line_thickness) * 15
+        self.draw_text(right_j, name_value_i, f"{self.username}",
+                       align="topleft")
+
+        # first hint text
         hint_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2)
-        hint_i = board.line_thickness + (board.square_size + board.line_thickness) * 20
-        self.draw_text(hint_j, hint_i, "press the button to change keybind", font_size=36)
+        hint_1_i = board.line_thickness + (board.square_size + board.line_thickness) * 18
+        self.draw_text(hint_j, hint_1_i, "press enter to change your name", font_size=36)
+
+        # second hint text
+        hint_2_i = board.line_thickness + (board.square_size + board.line_thickness) * 20
+        self.draw_text(hint_j, hint_2_i, "press the first letter button to change keybind", font_size=36)
 
         # Draw info lines
         # Draw vertical lines
@@ -619,8 +624,8 @@ while running:
                                     figure = next_figure
                                     figure.spawn()
                                     next_figure = Figure()
-                            if event.key == menu.EXIT or event.key == menu.EXIT:
-                                menu.store_record(menu.username, board.score)
+                            if event.key == menu.EXIT:
+                                menu.store_record()
                                 menu.GAME_OVER = True
                                 running = False
                             # if event.key == pygame.K_i:
@@ -648,12 +653,12 @@ while running:
 
                     # loose condition (filling reach top)
                     if board.filled():
-                        menu.store_record(menu.username, board.score)
+                        menu.store_record()
                         menu.GAME_OVER = True
 
                     # win condition
                     if board.score >= 10000:
-                        menu.store_record(menu.username, board.score)
+                        menu.store_record()
                         waiting_for_input = True
                     else:
                         waiting_for_input = False
@@ -717,6 +722,37 @@ while running:
                             elif event.key == menu.DROP:
                                 menu.set_key('drop')
                                 menu.DROP = None
+                            elif event.key == pygame.K_RETURN:
+                                name_edit = True
+                                input_active = True
+                                while name_edit:
+                                    for event in pygame.event.get():
+                                        if event.type == pygame.QUIT:
+                                            name_edit = False
+                                        if event.type == pygame.KEYDOWN:
+                                            if event.key == menu.EXIT or event.key == pygame.K_RETURN:
+                                                name_edit = False
+                                            elif event.type == pygame.MOUSEBUTTONDOWN:
+                                                input_active = True
+                                                menu.username = ""
+                                            elif event.type == pygame.KEYDOWN and input_active:
+                                                if event.key == pygame.K_RETURN:
+                                                    input_active = False
+                                                elif event.key == pygame.K_BACKSPACE:
+                                                    menu.username = menu.username[:-1]
+                                                else:
+                                                    menu.username += event.unicode
+
+                                            font = pygame.font.SysFont("arial.ttf", 64)
+                                            text_surf = font.render(menu.username, True, (16, 16, 16), (47, 79, 79))
+                                            text_rect = text_surf.get_rect()
+                                            j = board.line_thickness + (
+                                                        board.square_size + board.line_thickness) * 11
+                                            i = board.line_thickness + (board.square_size + board.line_thickness) * 15
+                                            text_rect.topleft = (j, i)
+                                            screen.blit(text_surf, text_rect)
+                                            pygame.display.flip()
+
                             else:
                                 menu.change_key(event.key)
 
