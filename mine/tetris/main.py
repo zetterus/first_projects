@@ -18,14 +18,22 @@ class Menu:
         self.key_to_change = None
 
         # Define colors
-        # self.WHITE = (255, 255, 255)
-        # self.RED = (255, 0, 0)
-        # self.GREEN = (0, 255, 0)
+        self.color_schemes = [((16, 16, 16), (46, 46, 46), (47, 79, 79), (0, 100, 255)),
+                              ((169, 162, 156), (40, 38, 43), (51, 51, 51), (213, 204, 199)),
+                              ((0, 0, 0), (20, 33, 61), (229, 229, 229), (252, 163, 17)),
+                              ((25, 29, 50), (109, 59, 71), (69, 58, 73), (40, 47, 68)),
+                              ((255, 214, 112), (255, 151, 112), (255, 112, 166), (112, 214, 255)),
+                              ((255, 238, 50), (255, 209, 0), (77, 77, 77), (32, 32, 32)),
+                              ((46, 52, 64), (59, 66, 82), (67, 76, 94), (76, 86, 106))]
+        self.current_color_scheme_index = 0
+        # lines and text
         self.BLACK = (16, 16, 16)
-        self.BLUE = (0, 100, 255)
+        # board background
         self.GRAY18 = (46, 46, 46)
-        # self.DARK_GREY = (32, 32, 32)
+        # borders and menus background
         self.DARK_SLATE_GREY = (47, 79, 79)
+        # figure color
+        self.BLUE = (0, 100, 255)
 
         # delay between move down time
         self.MOVE_DOWN_DELAY = 1000
@@ -35,8 +43,15 @@ class Menu:
         # username
         self.username = "NONAME"
 
-    def draw_text(self, j, i, text="NO TEXT", font_size=64, text_color=(16, 16, 16), bg_color=(47, 79, 79),
+    def draw_text(self, j, i, text="NO TEXT", font_size=None, text_color=None, bg_color=None,
                   align="center", font="arial.ttf"):
+        if font_size is None:
+            font_size = 64
+        if text_color is None:
+            text_color = self.BLACK
+        if bg_color is None:
+            bg_color = self.DARK_SLATE_GREY
+
         font = pygame.font.SysFont(font, font_size)
         text = font.render(text, True, text_color, bg_color)
         text_rect = text.get_rect()
@@ -48,7 +63,9 @@ class Menu:
             text_rect.topleft = (j, i)
         screen.blit(text, text_rect)
 
-    def draw_line(self, start, end, width=2, color=(32, 32, 32)):
+    def draw_line(self, start, end, width=2, color=None):
+        if color is None:
+            color = self.BLACK
         pygame.draw.line(screen, color, start, end, width)
 
     def draw_menu(self):  # изменить считывание рекордов прямо из файла
@@ -62,11 +79,6 @@ class Menu:
         start_i = board.line_thickness + size * 4
         self.draw_text(menu_j, start_i, "START", align="topleft")
         self.draw_text(menu_j, start_i, "S", text_color=menu.GRAY18, align="topleft")
-
-        # # load text
-        # load_i = board.line_thickness + size * 8
-        # self.draw_text(menu_j, load_i, "LOAD", align="topleft")
-        # self.draw_text(menu_j, load_i, "L", text_color=menu.GRAY18, align="topleft")
 
         # options text
         options_i = board.line_thickness + size * 6
@@ -82,7 +94,7 @@ class Menu:
         s_i = board.line_thickness + size * 11.5
         self.draw_text(menu_j, s_i, "SAVEGAMES:", align="topleft", font_size=48)
         try:
-            with open(r"D:\python\first_projects\mine\tetris\savegames.pkl", "rb") as file:
+            with open(r"savegames.pkl", "rb") as file:
                 savegames_voc = pickle.load(file)
                 for num, name in enumerate(savegames_voc.keys(), 1):
                     rec_i = board.line_thickness + size * (12 + num)
@@ -135,9 +147,6 @@ class Menu:
         # Draw the frame
         pygame.display.flip()
         pygame.time.Clock().tick(60)
-
-    def input_dialog_box(self):
-        pass
 
     def store_record(self):
         try:
@@ -247,13 +256,17 @@ class Menu:
                        align="topleft")
 
         # first hint text
-        hint_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2)
-        hint_1_i = board.line_thickness + (board.square_size + board.line_thickness) * 19
-        self.draw_text(hint_j, hint_1_i, "press enter to change your name(max 6 letters)", font_size=36)
+        hint_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 18)
+        hint_1_i = board.line_thickness + (board.square_size + board.line_thickness) * 17
+        self.draw_text(left_j, hint_1_i, "press Tab to change color theme", font_size=36, align="topleft")
 
         # second hint text
-        hint_2_i = board.line_thickness + (board.square_size + board.line_thickness) * 20
-        self.draw_text(hint_j, hint_2_i, "press the first letter button to change keybind", font_size=36)
+        hint_1_i = board.line_thickness + (board.square_size + board.line_thickness) * 18
+        self.draw_text(left_j, hint_1_i, "press Enter to change your name(max 6 letters)", font_size=36, align="topleft")
+
+        # third hint text
+        hint_2_i = board.line_thickness + (board.square_size + board.line_thickness) * 19
+        self.draw_text(left_j, hint_2_i, "press the first letter button to change keybind", font_size=36, align="topleft")
 
         # Draw info lines
         # Draw vertical lines
@@ -455,11 +468,13 @@ class Board:
         self.paused = False
 
     def draw_rect(self, j=0, i=0, width=None, height=None,
-                  color=(0, 100, 255)):  # Rectangle (startx, starty, width, height)
+                  color=None):  # Rectangle (startx, starty, width, height)
         if width is None:
             width = self.square_size
         if height is None:
             height = self.square_size
+        if color is None:
+            color = menu.BLUE
         pygame.draw.rect(screen, color, (j, i, width, height))
 
     def draw_figure(self, fig):
@@ -781,6 +796,12 @@ while running:
                             elif event.key == menu.DROP:
                                 menu.set_key('drop')
                                 menu.DROP = None
+                            elif event.key == pygame.K_TAB:
+                                menu.current_color_scheme_index += 1
+                                if menu.current_color_scheme_index >= len(menu.color_schemes):
+                                    menu.current_color_scheme_index = 0
+                                menu.BLACK, menu.GRAY18, menu.DARK_SLATE_GREY, menu.BLUE = menu.color_schemes[menu.current_color_scheme_index]
+
                             elif event.key == pygame.K_RETURN:
                                 name_edit = True
                                 input_active = True
