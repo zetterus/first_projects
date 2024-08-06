@@ -24,7 +24,7 @@ class Menu:
         self.BLACK = (16, 16, 16)
         self.BLUE = (0, 100, 255)
         self.GRAY18 = (46, 46, 46)
-        self.DARK_GREY = (32, 32, 32)
+        # self.DARK_GREY = (32, 32, 32)
         self.DARK_SLATE_GREY = (47, 79, 79)
 
         # delay between move down time
@@ -84,7 +84,6 @@ class Menu:
         try:
             with open(r"D:\python\first_projects\mine\tetris\savegames.pkl", "rb") as file:
                 savegames_voc = pickle.load(file)
-                print(savegames_voc)
                 for num, name in enumerate(savegames_voc.keys(), 1):
                     rec_i = board.line_thickness + size * (12 + num)
                     record = savegames_voc[name]
@@ -135,6 +134,7 @@ class Menu:
 
         # Draw the frame
         pygame.display.flip()
+        pygame.time.Clock().tick(60)
 
     def input_dialog_box(self):
         pass
@@ -157,12 +157,14 @@ class Menu:
         try:
             with open("savegames.pkl", "rb") as file:
                 records_voc = pickle.load(file)
-                records_voc[menu.username] = (menu, board, figure)
+                if menu.username in records_voc:
+                    old = records_voc[menu.username]
+                    new = (menu, board, figure)
+                records_voc[menu.username] = max(old, new, key=lambda x: x[1].score)
                 records_voc = {k: v for k, v in sorted(records_voc.items(), key=lambda x: x[1][1].score, reverse=True)}
                 if len(records_voc) > 3:
                     records_voc.popitem()
         except:
-            print("SAVE PROGRESS FAILED!")
             records_voc = {menu.username: (menu, board, figure)}
         finally:
             with open("savegames.pkl", "wb") as file:
@@ -176,7 +178,8 @@ class Menu:
                 global menu, board, figure
                 menu, board, figure = save
         except:
-            print("LOAD PROGRESS FAILURE!")
+            pass
+            # print("LOAD PROGRESS FAILURE!")
 
     def options_draw(self):
         # Fill the background
@@ -245,7 +248,7 @@ class Menu:
 
         # first hint text
         hint_j = board.line_thickness + (board.square_size + board.line_thickness) * (board.cols * 1.5 / 2)
-        hint_1_i = board.line_thickness + (board.square_size + board.line_thickness) * 18
+        hint_1_i = board.line_thickness + (board.square_size + board.line_thickness) * 19
         self.draw_text(hint_j, hint_1_i, "press enter to change your name(max 6 letters)", font_size=36)
 
         # second hint text
@@ -273,6 +276,7 @@ class Menu:
 
         # Draw the frame
         pygame.display.flip()
+        pygame.time.Clock().tick(60)
 
     def set_key(self, key_name):
         if key_name == 'rotate':
@@ -412,7 +416,6 @@ class Figure:
         for ii in range(self.f_height[0], self.f_height[1] - self.f_height[2]):
             for jj in range(self.f_width[0], self.f_width[1] - self.f_width[2]):
                 if board.board[self.i + 1 + ii][self.j + jj] + self.form[ii][jj] == 2:
-                    print(f"Collision detected at ({self.i + 1 + ii}, {self.j + jj})")
                     return False
 
         return True
@@ -599,6 +602,7 @@ class Board:
 
         # Draw the frame
         pygame.display.flip()
+        pygame.time.Clock().tick(60)
 
 
 # initializing objects
@@ -684,9 +688,9 @@ while running:
                             #     print(figure.i, figure.j)
 
                     # figures moves
-                    # figure moves down
+                    # figure moves down by its own
                     current_time = pygame.time.get_ticks()
-                    delta_time = current_time - menu.last_move_down_time
+                    delta_time = abs(current_time - menu.last_move_down_time)
                     if delta_time >= menu.MOVE_DOWN_DELAY and figure.can_move_down():  # if tick passed and figure can move down - move it down
                         figure.move(1, 0)
                         menu.last_move_down_time = current_time
@@ -747,6 +751,7 @@ while running:
                                     waiting_for_input = False
 
                         pygame.display.flip()
+                        pygame.time.Clock().tick(60)
 
                     # frame draw
                     board.draw_board(figure)
@@ -807,6 +812,7 @@ while running:
                                             menu.draw_text(j, i, text=menu.username, align="topleft",
                                                            bg_color=menu.DARK_SLATE_GREY)
                                             pygame.display.flip()
+                                            pygame.time.Clock().tick(60)
 
                             else:
                                 menu.change_key(event.key)
