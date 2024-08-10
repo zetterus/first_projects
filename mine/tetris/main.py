@@ -633,10 +633,8 @@ pygame.init()
 # Create the screen
 screen = pygame.display.set_mode((board.width * 1.5 - (board.square_size + board.line_thickness), board.height))
 
-# Title and Icon
+# Title
 pygame.display.set_caption("Tetris")
-icon = pygame.image.load("tetris.png")
-pygame.display.set_icon(icon)
 
 running = True
 options_running = True
