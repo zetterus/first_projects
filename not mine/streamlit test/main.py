@@ -4,6 +4,8 @@ from datetime import timedelta as td
 from datetime import time as ti
 import time
 import pandas as pd
+from matplotlib import pyplot as plt
+import numpy as np
 
 # #remove streamlit hamburger (& any other elements)
 # st.markdown("""
@@ -19,7 +21,7 @@ import pandas as pd
 # # {
 # # visibility: hidden;
 # # }
-#
+
 #
 # # text elements
 # st.title("Title")
@@ -98,37 +100,92 @@ import pandas as pd
 #         else:
 #             st.write("Unsupported format, fool")
 
-# sliders
-val = st.slider("slider example", min_value=4, max_value=42, value=8)
-st.write(val)
-val2 = st.text_input("enter text", max_chars=3)
-st.write(val2)
-val3 = st.text_area("enter text2", max_chars=10)
-st.write(val3)
-val4 = st.date_input("enter date", min_value=date(1980, 1, 1))
-st.write(val4)
-# timer
-def convert(t):
-    m, s, ms = t.split(":")
-    t_s = int(m) * 60 + int(s) + int(ms)/1000
-    return t_s
+# # sliders
+# val = st.slider("slider example", min_value=4, max_value=42, value=8)
+# st.write(val)
+# val2 = st.text_input("enter text", max_chars=3)
+# st.write(val2)
+# val3 = st.text_area("enter text2", max_chars=10)
+# st.write(val3)
+# val4 = st.date_input("enter date", min_value=date(1980, 1, 1))
+# st.write(val4)
+#
+#
+# # timer
+# def convert(t):
+#     m, s, ms = t.split(":")
+#     t_s = int(m) * 60 + int(s) + int(ms) / 1000
+#     return t_s
+#
+#
+# val5 = st.time_input("timer name", value=ti(0, 0, 0), step=td(seconds=60))
+# st.write(val5)
+# if str(val5) == "00:00:00":
+#     st.write("set the timer!")
+# else:
+#     sec = convert(str(val5))
+#     bar = st.progress(0)
+#     per = sec / 100
+#     status = st.empty()
+#     for i in range(100):
+#         bar.progress(i + 1)
+#         status.write(F"{i}%")
+#         time.sleep(per)
 
-val5 = st.time_input("timer name", value=ti(0, 0, 0), step=td(seconds=60))
-st.write(val5)
-if str(val5) == "00:00:00":
-    st.write("set the timer!")
+# # forms
+# st.markdown("<h1 style='text-align: center;'>User registration</h1>", unsafe_allow_html=True)
+# form = st.form("form 1")
+# form.text_input("First Name")
+# form.form_submit_button("Submit")
+#
+# with st.form("form 2", clear_on_submit=True):
+#     col1, col2 = st.columns(2)
+#     s_name = col1.text_input("Second name")
+#     l_name = col2.text_input("Last name")
+#     st.text_input("Email Address")
+#     st.text_input("Password")
+#     st.text_input("Confirm Password")
+#     day, month, year = st.columns(3)
+#     day.text_input("Day")
+#     month.text_input("Month")
+#     year.text_input("Year")
+#     s_state = st.form_submit_button("Submit registration")
+#     if s_state:
+#         if s_name == "" and l_name == "":
+#             st.warning("Please fill above fields")
+#         else:
+#             st.success("Submitted successfully")
+
+
+# sidebar
+x = np.linspace(0, 10, 100)
+bar_x = np.array([1, 2, 3, 4, 5])
+
+# st.sidebar.write("this is sidebar")
+# fig = plt.figure()
+# plt.plot(x, np.sin(x))
+# st.write(fig)
+
+opt = st.sidebar.radio("select graph", options=("line", "bar", "h-bar"))
+if opt == "line":
+    st.markdown("<h1 style='text-align: center;'>line chart</h1>", unsafe_allow_html=True)
+    fig = plt.figure()
+    # plt.style.use("https://github.com/dhaitz/matplotlib-stylesheets/raw/master/pitayasmoothie-dark.mplstyle")
+    plt.plot(x, np.sin(x))
+    plt.plot(x, np.cos(x), "--")
+    st.write(fig)
+elif opt == "bar":
+    st.markdown("<h1 style='text-align: center;'>line chart</h1>", unsafe_allow_html=True)
+    fig2 = plt.figure()
+    plt.bar(bar_x, bar_x * 10)
+    st.write(fig2)
 else:
-    sec = convert(str(val5))
-    bar = st.progress(0)
-    per = sec/100
-    status = st.empty()
-    for i in range(100):
-        bar.progress(i+1)
-        status.write(F"{i}%")
-        time.sleep(per)
+    st.markdown("<h1 style='text-align: center;'>line chart</h1>", unsafe_allow_html=True)
+    fig = plt.figure()
+    plt.barh(bar_x*10, bar_x)
+    st.write(fig)
 
-# # sidebar
-# st.sidebar.empty()
+
 
 # decorations
 # st.snow()
