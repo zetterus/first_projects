@@ -30,7 +30,7 @@ Enter game tag id:""")
         print("Invalid user.. input")
 
 
-def task():
+def watcher():
     # Начальный номер страницы
     page_number = 0
     page_count = 100  # Количество игр на одной странице, больше 100 не даёт?
@@ -70,13 +70,12 @@ def task():
 
                 for game in games_list:
                     game_name = game.find("span", class_="title").text
-                    game_id = game.get("data-ds-appid")
                     game_link = game.get("href")
                     try:
                         game_discount = game.find("div", class_="discount_pct").text
                         discount_original_price = game.find("div", class_="discount_original_price").text
                         discount_final_price = game.find("div", class_="discount_final_price").text
-                        game_string = f"{game_number}. {game_name} discount: {game_discount} discounted price: {discount_final_price} original price: {discount_original_price} game id: {game_id}\n{game_link}\n"
+                        game_string = f"{game_number}. {game_name} discount: {game_discount} discounted price: {discount_final_price} original price: {discount_original_price}\n{game_link}\n"
                     except:
                         game_string = f"{game_number}. {game_name} discount: no discount info\n{game_link}\n"
 
@@ -93,7 +92,7 @@ def task():
                 break
 
 
-schedule.every().day.at(scheduled_time).do(task)
+schedule.every().day.at(scheduled_time).do(watcher)
 
 while True:
     schedule.run_pending()
