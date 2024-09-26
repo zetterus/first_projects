@@ -22,8 +22,12 @@ Early Access (ID: 493)
 Free to Play (ID: 113)
 Sports (ID: 701)
 Enter game tag id:""")
+        tag_id == int(tag_id)
         is_discounted = input("Search for discounted? 1 - yes, 0 - no")
+        is_discounted in (0, 1)
         scheduled_time = input("Input check time(example 14:30):")
+        0 < scheduled_time.split(":")[0] < 24
+        0 < scheduled_time.split(":")[1] < 60
         print("Input accepted")
         break
     except:
@@ -37,11 +41,11 @@ def watcher():
     game_number = 1
 
     # Открываем файл в режиме записи, чтобы очистить его
-    with open("soup_all_pages.txt", "w", encoding="utf-8") as file:
+    with open("watcher_report.txt", "w", encoding="utf-8") as file:
         pass
 
     # Открываем файл в режиме добавления
-    with open("soup_all_pages.txt", "a", encoding="utf-8") as file:
+    with open("watcher_report.txt", "a", encoding="utf-8") as file:
         while True:
             # Формируем URL для каждой страницы
             url = f"https://store.steampowered.com/search/results/?query&start={page_number}&count={page_count}&dynamic_data=&sort_by=_ASC&tags={tag_id}&snr=1_7_7_2300_7&specials={is_discounted}&infinite=1"
