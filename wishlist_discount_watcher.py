@@ -5,8 +5,8 @@ import time
 
 while True:
     try:
-        user_name = input("Enter user steam SteamID64:")  # 76561198120742945
-        user_name == int(user_name)
+        user_id = input("Enter user steam SteamID64:")  # 76561198120742945
+        user_id == int(user_id)
         game_tag = input(
             "Action|Indie|Adventure|Casual|RPG|Strategy|Simulation|Early Access|Free to Play|Sports|All\nEnter game tag:")
         game_tag == str(game_tag)
@@ -29,7 +29,7 @@ def personal_watcher():
     # Открываем файл в режиме добавления
     with open("watcher_report.txt", "a", encoding="utf-8") as file:
         while True:
-            url = F"https://store.steampowered.com/wishlist/profiles/{user_name}/wishlistdata/?p={page}&v="
+            url = F"https://store.steampowered.com/wishlist/profiles/{user_id}/wishlistdata/?p={page}&v="
             response = requests.get(url)
             games_data = json.loads(response.text)
 
