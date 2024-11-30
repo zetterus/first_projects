@@ -49,3 +49,6 @@ def from_roman(roman_num: str) -> int:
 
 
 print(to_roman(4))
+print(to_roman(86))
+print(to_roman(1666))
+print(to_roman(2000))
